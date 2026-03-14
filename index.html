@@ -1,783 +1,1125 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Motion — AI Powered TMS · Investor Deck</title>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Motion — Investor Deck</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  :root {
-    --mint: #a8fbd0;
-    --charcoal: #383838;
-    --mint10: rgba(168,251,208,0.10);
-    --mint20: rgba(168,251,208,0.20);
-    --mint08: rgba(168,251,208,0.08);
-    --white45: rgba(255,255,255,0.45);
-    --white60: rgba(255,255,255,0.60);
-    --white72: rgba(255,255,255,0.72);
-    --white80: rgba(255,255,255,0.80);
-    --white10: rgba(255,255,255,0.10);
-    --white05: rgba(255,255,255,0.05);
-  }
-
-  html, body { height: 100%; background: var(--charcoal); }
-  body { font-family: 'DM Sans', sans-serif; color: #fff; overflow: hidden; }
-
-  #root { height: 100vh; width: 100vw; overflow: hidden; }
-
-  /* ── Slide shell ── */
-  .slide {
-    position: absolute; inset: 0;
-    background: var(--charcoal);
-    display: flex; flex-direction: column;
-    min-height: 100vh; overflow: hidden;
-    animation: slideIn .35s cubic-bezier(.25,.46,.45,.94) both;
-  }
-  .slide.out { animation: slideOut .28s cubic-bezier(.25,.46,.45,.94) both; }
-
-  @keyframes slideIn  { from { opacity:0; transform:translateY(22px) } to { opacity:1; transform:translateY(0) } }
-  @keyframes slideOut { from { opacity:1; transform:translateY(0) }  to { opacity:0; transform:translateY(-20px) } }
-
-  .slide-glow {
-    position: absolute; inset: 0; pointer-events: none;
-    background:
-      radial-gradient(circle at 80% 10%, rgba(168,251,208,0.18) 0%, transparent 35%),
-      radial-gradient(circle at 10% 90%, rgba(168,251,208,0.08) 0%, transparent 30%);
-  }
-
-  .slide-inner {
-    position: relative; z-index: 1;
-    max-width: 1280px; margin: 0 auto;
-    width: 100%; height: 100vh;
-    display: flex; flex-direction: column;
-    padding: 28px 56px 24px;
-  }
-
-  /* ── Header ── */
-  .deck-header {
-    display: flex; align-items: center; justify-content: space-between;
-    flex-shrink: 0;
-  }
-  .logo-pill {
-    display: flex; align-items: center; gap: 12px;
-  }
-  .logo-box {
-    width: 38px; height: 38px; border-radius: 10px;
-    border: 1px solid var(--white10); background: var(--white05);
-    display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 0 20px rgba(168,251,208,0.08);
-    font-size: 18px; font-weight: 700; color: var(--mint);
-    font-family: 'DM Mono', monospace;
-  }
-  .logo-label { line-height: 1.2; }
-  .logo-name { font-size: 11px; text-transform: uppercase; letter-spacing: .28em; color: var(--white45); }
-  .logo-sub  { font-size: 13px; color: var(--white80); }
-  .slide-counter {
-    border: 1.5px solid rgba(255,255,255,0.5); border-radius: 99px;
-    padding: 5px 16px; font-size: 12px; letter-spacing: .26em;
-    color: rgba(255,255,255,0.95); font-family: 'DM Mono', monospace;
-    background: rgba(255,255,255,0.08);
-  }
-
-  /* ── Eyebrow / Title / Subtitle ── */
-  .slide-main { flex: 1; display: flex; flex-direction: column; padding: 20px 0 0; overflow: hidden; }
-  .eyebrow {
-    font-size: 11px; font-weight: 500; text-transform: uppercase;
-    letter-spacing: .3em; color: var(--mint); margin-bottom: 10px;
-  }
-  .slide-title {
-    font-size: clamp(28px, 4vw, 52px); font-weight: 600;
-    line-height: 1.12; max-width: 820px; margin-bottom: 14px;
-  }
-  .slide-subtitle {
-    font-size: clamp(13px, 1.3vw, 17px); color: var(--white72);
-    max-width: 760px; line-height: 1.6; margin-bottom: 22px;
-  }
-  .slide-body { flex: 1; overflow: hidden; }
-
-  /* ── Cards ── */
-  .card {
-    border: 1px solid var(--white10); border-radius: 24px;
-    background: var(--white05); backdrop-filter: blur(8px);
-    padding: 18px 20px;
-  }
-  .card-mint {
-    border-color: var(--mint20); background: var(--mint10);
-  }
-  .card-label {
-    font-size: 10px; text-transform: uppercase; letter-spacing: .24em;
-    color: var(--white45); margin-bottom: 6px;
-  }
-  .card-label-mint { color: var(--mint); }
-  .card-value { font-size: 26px; font-weight: 600; color: var(--mint); margin-bottom: 6px; }
-  .card-sub { font-size: 12px; color: var(--white60); line-height: 1.5; }
-
-  /* Feature card */
-  .feat-icon {
-    display: inline-flex; border-radius: 14px;
-    border: 1px solid var(--mint20); background: var(--mint10);
-    padding: 10px; color: var(--mint); margin-bottom: 14px;
-  }
-  .feat-title { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
-  .feat-body  { font-size: 12px; line-height: 1.65; color: var(--white60); }
-
-  /* Grid helpers */
-  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-  .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
-  .grid4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 14px; }
-  .grid-asym { display: grid; grid-template-columns: 1.25fr 0.9fr; gap: 20px; }
-  .grid-asym2 { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 20px; }
-  .grid-asym3 { display: grid; grid-template-columns: 1fr 1.1fr; gap: 20px; }
-
-  /* Check chip */
-  .chip {
-    display: flex; align-items: center; gap: 10px;
-    border: 1px solid var(--white10); border-radius: 14px;
-    background: var(--white05); padding: 10px 14px;
-    font-size: 13px; color: rgba(255,255,255,0.85);
-  }
-  .chip-check { width: 16px; height: 16px; color: var(--mint); flex-shrink: 0; }
-
-  /* Comparison table */
-  .comp-table { border: 1px solid var(--white10); border-radius: 24px; overflow: hidden; }
-  .comp-head { display: grid; grid-template-columns: 1.6fr 1fr 1fr 1fr 1fr; background: var(--white05); }
-  .comp-head-cell {
-    padding: 12px 14px; font-size: 10px; text-transform: uppercase;
-    letter-spacing: .2em; color: var(--white45); text-align: center;
-  }
-  .comp-head-cell:first-child { text-align: left; }
-  .comp-head-cell.motion-col { color: var(--mint); }
-  .comp-row { display: grid; grid-template-columns: 1.6fr 1fr 1fr 1fr 1fr; border-top: 1px solid var(--white10); }
-  .comp-row-label { padding: 10px 14px; font-size: 12px; color: rgba(255,255,255,0.85); }
-  .comp-cell { display: flex; align-items: center; justify-content: center; border-left: 1px solid var(--white10); padding: 10px; }
-  .comp-dash { color: var(--white45); font-size: 14px; }
-
-  /* Nav */
-  .nav {
-    position: fixed; bottom: 20px; right: 24px; z-index: 100;
-    display: flex; align-items: center; gap: 18px;
-    border: 1px solid var(--white10); border-radius: 99px;
-    background: rgba(0,0,0,0.35); padding: 10px 20px;
-    backdrop-filter: blur(16px);
-  }
-  .nav-btn {
-    background: none; border: none; color: rgba(255,255,255,0.65);
-    font-size: 13px; font-family: 'DM Sans', sans-serif;
-    cursor: pointer; display: flex; align-items: center; gap: 6px;
-    transition: color .2s;
-  }
-  .nav-btn:hover { color: #fff; }
-  .nav-btn:disabled { color: rgba(255,255,255,0.2); cursor: default; }
-  .nav-next {
-    text-transform: uppercase; letter-spacing: .18em;
-    font-size: 12px; color: rgba(255,255,255,0.8);
-  }
-  .nav-next:hover { color: var(--mint); }
-  .nav-line {
-    width: 60px; height: 1px; background: rgba(168,251,208,0.25);
-    position: relative; overflow: hidden; display: inline-block; margin: 0 4px;
-  }
-  .nav-progress {
-    position: absolute; left: 0; top: 0; height: 100%;
-    background: var(--mint); transition: width .3s;
-  }
-
-  /* SVG icons */
-  svg.icon { width: 18px; height: 18px; display: block; }
-  svg.icon-sm { width: 14px; height: 14px; display: block; }
-
-  /* Title slide */
-  .title-map {
-    position: absolute; inset: 0;
-    background-size: cover; background-position: center;
-    background-image:
-      linear-gradient(rgba(56,56,56,0.66), rgba(56,56,56,0.84)),
-      url('https://images.unsplash.com/photo-1524661135-423995f22d0b?w=1600&q=80');
-  }
-  .title-map.loaded {
-    background-image:
-      linear-gradient(rgba(56,56,56,0.66), rgba(56,56,56,0.84)),
-      var(--map-img);
-  }
-  .title-radial {
-    position: absolute; inset: 0;
-    background: radial-gradient(circle at center, rgba(168,251,208,0.16) 0%, transparent 32%);
-  }
-  .title-center {
-    flex: 1; display: flex; flex-direction: column;
-    align-items: center; justify-content: center; text-align: center;
-  }
-  .title-logo-box {
-    width: 140px; height: 140px; border-radius: 28px;
-    border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.05);
-    box-shadow: 0 0 50px rgba(168,251,208,0.22); backdrop-filter: blur(8px);
-    display: flex; align-items: center; justify-content: center;
-    margin-bottom: 28px; font-size: 52px; font-weight: 700;
-    color: var(--mint); font-family: 'DM Mono', monospace;
-  }
-  .title-wordmark { font-size: clamp(42px, 7vw, 72px); font-weight: 600; letter-spacing: -.02em; }
-  .title-tag {
-    font-size: clamp(12px, 1.2vw, 16px); font-weight: 500;
-    text-transform: uppercase; letter-spacing: .28em; color: var(--mint); margin: 14px 0;
-  }
-  .title-desc { font-size: clamp(13px, 1.3vw, 17px); color: rgba(255,255,255,0.78); max-width: 640px; line-height: 1.7; }
-
-  /* Progress dots */
-  .dots {
-    position: fixed; bottom: 10px; left: 50%; transform: translateX(-50%);
-    display: flex; gap: 6px; z-index: 99;
-  }
-  .dot {
-    width: 6px; height: 6px; border-radius: 99px;
-    background: rgba(255,255,255,0.2); transition: all .3s;
-  }
-  .dot.active { background: var(--mint); width: 18px; }
-
-  /* Scrollable body */
-  .scroll-body { overflow-y: auto; flex: 1; }
-  .scroll-body::-webkit-scrollbar { width: 4px; }
-  .scroll-body::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 2px; }
-
-  /* Roadmap items */
-  .roadmap-item {
-    border: 1px solid var(--white10); border-radius: 12px;
-    background: var(--white05); padding: 9px 14px;
-    font-size: 12px; color: rgba(255,255,255,0.85);
-  }
-
-  /* Bar chart */
-  .bar-chart { display: flex; align-items: flex-end; gap: 12px; height: 140px; }
-  .bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; }
-  .bar { width: 100%; border-radius: 8px 8px 0 0; background: var(--mint); min-height: 4px; }
-  .bar-label { font-size: 11px; color: var(--white45); font-family: 'DM Mono', monospace; }
-
-  /* Team placeholder avatar */
-  .avatar { width: 48px; height: 48px; border-radius: 14px; border: 1px solid var(--white10); background: var(--white05); margin-bottom: 12px; }
-
-  .text-mint { color: var(--mint); }
-  .text-muted { color: var(--white60); }
-  .text-sm { font-size: 12px; }
-  .text-xs { font-size: 11px; }
-  .mt4 { margin-top: 4px; }
-  .mt8 { margin-top: 8px; }
-  .mt12 { margin-top: 12px; }
-  .mt16 { margin-top: 16px; }
-  .space-y > * + * { margin-top: 10px; }
-
-  /* Agenda */
-  .agenda-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
-  .agenda-card { border: 1px solid var(--white10); border-radius: 20px; background: var(--white05); padding: 16px 18px; }
-  .agenda-num { font-size: 10px; text-transform: uppercase; letter-spacing: .24em; color: var(--white45); margin-bottom: 6px; font-family: 'DM Mono', monospace; }
-  .agenda-name { font-size: 15px; font-weight: 500; color: rgba(255,255,255,0.9); }
-
-  .layer-row {
-    display: flex; align-items: center; justify-content: space-between;
-    border: 1px solid var(--white10); border-radius: 12px;
-    padding: 10px 14px; font-size: 13px;
-  }
-  .layer-tag { font-size: 11px; color: var(--mint); }
-  .layer-tag-dim { font-size: 11px; color: rgba(255,255,255,.3); }
-
-  .why-p { font-size: 13px; line-height: 1.65; color: rgba(255,255,255,0.74); padding: 10px 0; border-top: 1px solid var(--white10); }
-  .why-p:first-child { border-top: none; }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ac:#1fbb72;--acm:#5de8a8;--mint:#a8fbd0;
+  --ch:#1c1c1e;
+  --bg:#fff;--bg2:#f5f5f7;--bg3:#e8e8ed;
+  --bd:rgba(0,0,0,.08);--bd2:rgba(0,0,0,.04);
+  --t:#1c1c1e;--t2:#3a3a3c;--t3:#6e6e73;--t4:#aeaeb2;
+  --mt:rgba(168,251,208,.28);--mt2:rgba(168,251,208,.16);
+  --ms:rgba(31,187,114,.22);--mx:#178a54;
+}
+html,body{height:100%;background:var(--bg2)}
+body{font-family:'Inter',-apple-system,sans-serif;color:var(--t);overflow:hidden;-webkit-font-smoothing:antialiased}
+#root{height:100vh;width:100vw;overflow:hidden}
+.slide{position:absolute;inset:0;background:var(--bg);display:flex;flex-direction:column;animation:sIn .34s cubic-bezier(.25,.46,.45,.94) both}
+.sAlt{background:var(--bg2)}
+.slide.out{animation:sOut .22s ease both}
+@keyframes sIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes sOut{from{opacity:1;transform:translateY(0)}to{opacity:0;transform:translateY(-14px)}}
+.acl{position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--acm) 35%,var(--mint) 65%,transparent);opacity:.55}
+.inn{position:relative;z-index:2;max-width:1200px;margin:0 auto;width:100%;height:100vh;display:flex;flex-direction:column;padding:26px 54px 20px}
+.hdr{display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.ctr{font-size:12px;letter-spacing:.2em;font-weight:500;color:var(--t4);padding:5px 14px;border:1px solid var(--bd);border-radius:99px;background:var(--bg2)}
+.sm{flex:1;display:flex;flex-direction:column;padding-top:18px;overflow:hidden}
+.ey{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.36em;color:var(--ac);margin-bottom:10px}
+.h1{font-size:clamp(26px,3.6vw,50px);font-weight:800;line-height:1.08;letter-spacing:-.025em;color:var(--ch);max-width:860px;margin-bottom:7px}
+.sub{font-size:clamp(14px,1.2vw,17px);color:var(--t3);max-width:700px;line-height:1.65;margin-bottom:14px;font-weight:400}
+.sbody{flex:1;overflow:hidden}
+.scr{overflow-y:auto;flex:1}
+.scr::-webkit-scrollbar{width:3px}
+.scr::-webkit-scrollbar-thumb{background:var(--bg3);border-radius:2px}
+.crd{border:1px solid var(--bd);border-radius:16px;background:var(--bg);padding:18px 20px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.crdM{border-color:var(--ms);background:var(--mt2)}
+.crdD{background:var(--ch);border-color:transparent;box-shadow:0 2px 14px rgba(0,0,0,.14)}
+.sLbl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.26em;color:var(--t4);margin-bottom:7px}
+.sLblM{color:var(--mx)}.sLblW{color:rgba(255,255,255,.4)}
+.sVal{font-size:30px;font-weight:800;color:var(--ch);line-height:1;margin-bottom:4px;letter-spacing:-.02em}
+.sValM{color:var(--ac)}.sValW{color:#fff}
+.sDsc{font-size:13px;color:var(--t3);line-height:1.5}
+.sDscW{color:rgba(255,255,255,.5)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.gA{display:grid;grid-template-columns:1.25fr 1fr;gap:18px}
+.gA2{display:grid;grid-template-columns:1fr 1.15fr;gap:18px}
+.pRow{display:flex;align-items:flex-start;gap:14px;padding:11px 0;border-top:1px solid var(--bd)}
+.pRow:first-child{border-top:none;padding-top:0}
+.pNum{font-size:12px;color:var(--t4);min-width:22px;padding-top:2px;font-weight:600}
+.pTit{font-size:16px;font-weight:600;color:var(--t);margin-bottom:3px}
+.pDsc{font-size:13px;color:var(--t3);line-height:1.5}
+.pil{border:1px solid var(--bd);border-radius:14px;background:var(--bg);padding:16px 18px}
+.pilIco{width:34px;height:34px;border-radius:9px;border:1px solid var(--ms);background:var(--mt2);display:flex;align-items:center;justify-content:center;color:var(--ac);margin-bottom:10px}
+.pilTit{font-size:14px;font-weight:600;color:var(--t);margin-bottom:5px}
+.pilBod{font-size:13px;color:var(--t3);line-height:1.6}
+.rRow{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-top:1px solid var(--bd)}
+.rRow:first-child{border-top:none;padding-top:0}
+.rNam{font-size:15px;font-weight:600;color:var(--t)}
+.rDet{font-size:12px;color:var(--t3);margin-top:2px}
+.rBdg{padding:4px 11px;border-radius:99px;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;background:var(--mt);color:var(--mx);border:1px solid var(--ms);white-space:nowrap}
+.mkup{border:1px solid var(--bd);border-radius:12px;overflow:hidden;background:var(--bg2)}
+.mkBar{background:var(--bg3);border-bottom:1px solid var(--bd);padding:7px 11px;display:flex;align-items:center;gap:5px}
+.mkDot{width:6px;height:6px;border-radius:50%;background:var(--bd)}
+.mkLbl{font-size:9px;color:var(--t4);margin-left:7px;letter-spacing:.16em;text-transform:uppercase;font-weight:600}
+.mkBod{padding:10px}
+.mkRow{display:flex;align-items:center;justify-content:space-between;padding:7px 9px;border-radius:7px;background:var(--bg);margin-bottom:4px;font-size:11px;border:1px solid var(--bd2)}
+.mkRow:last-child{margin-bottom:0}
+.tgG{font-size:9px;padding:2px 7px;border-radius:99px;background:var(--mt);color:var(--mx);font-weight:600}
+.tgB{font-size:9px;padding:2px 7px;border-radius:99px;background:rgba(0,122,255,.1);color:#007aff;font-weight:600}
+.tgO{font-size:9px;padding:2px 7px;border-radius:99px;background:rgba(255,149,0,.1);color:#ff9500;font-weight:600}
+.ecoN{border:1px solid var(--bd);border-radius:9px;background:var(--bg);padding:9px 14px;font-size:13px;font-weight:500;color:var(--t2);text-align:center}
+.ecoNM{border-color:var(--ms);background:var(--mt2);color:var(--mx);font-weight:600}
+.ecoC{width:92px;height:92px;border-radius:50%;border:2px solid var(--ac);background:var(--mt2);display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:800;font-size:15px;color:var(--ch);gap:1px;flex-shrink:0}
+.ecoC span{font-size:9px;font-weight:500;color:var(--t3);text-transform:uppercase;letter-spacing:.14em}
+.ctbl{border:1px solid var(--bd);border-radius:14px;overflow:hidden}
+.ctHd{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr 1fr;background:var(--bg2)}
+.ctHC{padding:10px 12px;font-size:10px;text-transform:uppercase;letter-spacing:.18em;color:var(--t4);text-align:center;font-weight:700}
+.ctHC:first-child{text-align:left}
+.ctHH{color:var(--mx)}
+.ctR{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr 1fr;border-top:1px solid var(--bd)}
+.ctRN{padding:9px 12px;font-size:13px;color:var(--t2);font-weight:500}
+.ctRC{display:flex;align-items:center;justify-content:center;border-left:1px solid var(--bd);padding:9px}
+.tbg{position:absolute;inset:0;background:radial-gradient(ellipse at 68% 38%,rgba(168,251,208,.18) 0%,transparent 55%),radial-gradient(ellipse at 18% 82%,rgba(168,251,208,.08) 0%,transparent 40%),#fff}
+.tctr{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 40px}
+.tw{font-size:clamp(72px,11vw,130px);font-weight:800;letter-spacing:-.04em;color:var(--ch);line-height:1;margin-bottom:18px}
+.ttg{font-size:clamp(12px,1.1vw,15px);font-weight:700;text-transform:uppercase;letter-spacing:.4em;color:var(--ac);margin-bottom:20px}
+.tds{font-size:clamp(17px,1.7vw,24px);color:var(--t3);max-width:620px;line-height:1.7;font-weight:400}
+.tsts{display:flex;align-items:center;gap:44px;margin-top:44px}
+.tsi{text-align:center}
+.tsn{font-size:clamp(26px,3vw,38px);font-weight:800;color:var(--ch);letter-spacing:-.025em}
+.tsl{font-size:clamp(10px,.9vw,13px);font-weight:600;text-transform:uppercase;letter-spacing:.22em;color:var(--t4);margin-top:5px}
+.tsdv{width:1px;height:36px;background:var(--bd)}
+.tbdg{margin-top:32px;padding:9px 22px;border-radius:99px;border:1px solid var(--bd);background:var(--bg2);font-size:clamp(10px,.9vw,13px);color:var(--t4);letter-spacing:.16em;text-transform:uppercase;font-weight:500}
+.nav{position:fixed;bottom:20px;right:22px;z-index:100;display:flex;align-items:center;gap:11px;border:1px solid var(--bd);border-radius:99px;background:rgba(255,255,255,.92);padding:8px 16px;backdrop-filter:blur(20px);box-shadow:0 2px 10px rgba(0,0,0,.08)}
+.nb{background:none;border:none;color:var(--t3);font-size:11px;font-family:'Inter',sans-serif;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:5px;text-transform:uppercase;letter-spacing:.13em;transition:color .2s}
+.nb:hover{color:var(--t)}.nb:disabled{color:var(--t4);cursor:default}.nb.pr:hover{color:var(--ac)}
+.nsep{width:1px;height:14px;background:var(--bd)}
+.nln{width:38px;height:1px;background:var(--bd);position:relative;overflow:hidden;display:inline-block;margin:0 2px}
+.npg{position:absolute;left:0;top:0;height:100%;background:var(--ac);transition:width .3s}
+.dots{position:fixed;bottom:10px;left:50%;transform:translateX(-50%);display:flex;gap:5px;z-index:99}
+.dot{width:5px;height:5px;border-radius:99px;background:var(--bg3);transition:all .3s;cursor:pointer}
+.dot.on{background:var(--ac);width:14px}
+.chk{display:inline-flex;color:var(--ac);flex-shrink:0}
+.dv{height:1px;background:var(--bd);margin:11px 0}
+.s8>*+*{margin-top:8px}.s10>*+*{margin-top:10px}.s12>*+*{margin-top:12px}
 </style>
 </head>
 <body>
 <div id="root"></div>
 <script>
-const { createElement: h, useState, useEffect, useCallback, createContext, useContext } = React;
+(function(){
+var h = React.createElement;
+var useState = React.useState;
+var useEffect = React.useEffect;
+var useCallback = React.useCallback;
 
-// ── Global logo URL (fetched once as blob to bypass Imgur hotlink block) ───
-const LogoCtx = createContext(null);
+/* ── Logo — loads from imgur, recolored for light bg ── */
+var _logoUrl = null;
+var _logoCallbacks = [];
+var _logoLoading = false;
 
-function LogoProvider({ children }) {
-  const [recoloredUrl, setRecoloredUrl] = useState(null);
-
-  useEffect(() => {
-    const img = new Image();
-    img.crossOrigin = 'anonymous';
-
-    const process = () => {
-      const canvas = document.createElement('canvas');
-      canvas.width = img.naturalWidth;
-      canvas.height = img.naturalHeight;
-      const ctx = canvas.getContext('2d');
-      ctx.drawImage(img, 0, 0);
-      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-      const d = imageData.data;
-
-      for (let i = 0; i < d.length; i += 4) {
-        const r = d[i], g = d[i+1], b = d[i+2], a = d[i+3];
-        if (a < 10) continue;
-
-        const max = Math.max(r,g,b), min = Math.min(r,g,b);
-        const sat = max === 0 ? 0 : (max - min) / max;
-        const brightness = 0.299*r + 0.587*g + 0.114*b;
-
-        if (sat > 0.15) {
-          // Colored pixel (the green icon) → exact mint #a8fbd0
-          d[i] = 0xa8; d[i+1] = 0xfb; d[i+2] = 0xd0;
-        } else if (brightness < 160) {
-          // Dark pixel (text, outlines) → white
-          d[i] = d[i+1] = d[i+2] = 255;
-        } else {
-          // Light/mid neutral → white
-          d[i] = d[i+1] = d[i+2] = 255;
-        }
+function loadLogoOnce(cb){
+  if(_logoUrl){ cb(_logoUrl); return; }
+  _logoCallbacks.push(cb);
+  if(_logoLoading) return;
+  _logoLoading = true;
+  var src = 'https://i.imgur.com/EYHHxAb.png';
+  var img = new Image();
+  img.crossOrigin = 'anonymous';
+  img.onload = function(){
+    try{
+      var cv = document.createElement('canvas');
+      cv.width = img.naturalWidth; cv.height = img.naturalHeight;
+      var ctx = cv.getContext('2d');
+      ctx.drawImage(img,0,0);
+      var d = ctx.getImageData(0,0,cv.width,cv.height);
+      for(var i=0;i<d.data.length;i+=4){
+        if(d.data[i+3]<10) continue;
+        var mx=Math.max(d.data[i],d.data[i+1],d.data[i+2]);
+        var mn=Math.min(d.data[i],d.data[i+1],d.data[i+2]);
+        var sat=mx===0?0:(mx-mn)/mx;
+        var br=0.299*d.data[i]+0.587*d.data[i+1]+0.114*d.data[i+2];
+        if(sat>0.15){d.data[i]=0x1f;d.data[i+1]=0xbb;d.data[i+2]=0x72;}
+        else{d.data[i]=d.data[i+1]=d.data[i+2]=0x1c;if(br>220)d.data[i+3]=0;}
       }
-
-      ctx.putImageData(imageData, 0, 0);
-      setRecoloredUrl(canvas.toDataURL());
-    };
-
-    fetch('https://i.imgur.com/EYHHxAb.png', { referrerPolicy: 'no-referrer' })
-      .then(r => r.blob())
-      .then(blob => { img.onload = process; img.src = URL.createObjectURL(blob); })
-      .catch(() => { img.onload = process; img.src = 'https://i.imgur.com/EYHHxAb.png'; });
-  }, []);
-
-  return h(LogoCtx.Provider, { value: recoloredUrl }, children);
+      ctx.putImageData(d,0,0);
+      _logoUrl = cv.toDataURL();
+    }catch(e){ _logoUrl = src; }
+    _logoCallbacks.forEach(function(fn){fn(_logoUrl);});
+    _logoCallbacks = [];
+  };
+  img.onerror = function(){
+    _logoUrl = src;
+    _logoCallbacks.forEach(function(fn){fn(_logoUrl);});
+    _logoCallbacks = [];
+  };
+  fetch(src,{referrerPolicy:'no-referrer'})
+    .then(function(r){return r.blob();})
+    .then(function(blob){img.src=URL.createObjectURL(blob);})
+    .catch(function(){img.src=src;});
 }
 
-function Logo({ variant = 'header' }) {
-  const logoUrl = useContext(LogoCtx);
+function Logo(props){
+  var ht = props.ht || 24;
+  var urlState = useState(null);
+  var url = urlState[0]; var setUrl = urlState[1];
+  useEffect(function(){
+    loadLogoOnce(function(u){setUrl(u);});
+  },[]);
+  if(url) return h('img',{src:url,alt:'Motion',style:{height:ht,width:'auto',objectFit:'contain',display:'block',flexShrink:0}});
+  return h('span',{style:{fontSize:Math.round(ht*.85),fontWeight:800,letterSpacing:'-.035em',color:'var(--ch)',lineHeight:1,userSelect:'none'}},'Motion');
+}
+function LogoHero(props){
+  var ht = props.ht || 68;
+  return h('span',{style:{fontSize:Math.round(ht*.9),fontWeight:800,letterSpacing:'-.04em',color:'var(--ch)',lineHeight:1,display:'block',marginBottom:11,userSelect:'none'}},'Motion');
+}
 
-  if (variant === 'title') {
-    if (logoUrl) return h('img', { src: logoUrl, alt: 'Motion', style: { height: 68, width: 'auto', objectFit: 'contain', marginBottom: 24 } });
-    return h('div', { style: { color:'var(--mint)', fontFamily:"'DM Mono',monospace", fontWeight:700, fontSize:52, marginBottom:24 } }, 'M');
+/* ── Icons (all single-quoted SVG strings) ── */
+var IC = {
+  shield: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',
+  dollar: '<line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>',
+  zap:    '<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>',
+  truck:  '<rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>',
+  layers: '<polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/>',
+  cpu:    '<rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/>',
+  check:  '<polyline points="20 6 9 12 4 10"/>',
+  xmark:  '<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>',
+};
+function Icon(props){
+  var name = props.name; var sz = props.sz || 15;
+  return h('svg',{xmlns:'http://www.w3.org/2000/svg',width:sz,height:sz,viewBox:'0 0 24 24',fill:'none',stroke:'currentColor',strokeWidth:1.75,strokeLinecap:'round',strokeLinejoin:'round',dangerouslySetInnerHTML:{__html:IC[name]}});
+}
+function Ck(props){
+  var sz = props.sz || 12;
+  return h('span',{className:'chk'},h('svg',{xmlns:'http://www.w3.org/2000/svg',width:sz,height:sz,viewBox:'0 0 24 24',fill:'none',stroke:'currentColor',strokeWidth:2.5,strokeLinecap:'round',strokeLinejoin:'round',dangerouslySetInnerHTML:{__html:IC.check}}));
+}
+function Xm(props){
+  var sz = props.sz || 12;
+  return h('svg',{xmlns:'http://www.w3.org/2000/svg',width:sz,height:sz,viewBox:'0 0 24 24',fill:'none',stroke:'#ef4444',strokeWidth:2.5,strokeLinecap:'round',strokeLinejoin:'round',dangerouslySetInnerHTML:{__html:IC.xmark}});
+}
+
+/* ── Shell components ── */
+function Hdr(props){
+  var idx = props.idx; var tot = props.tot;
+  return h('div',{className:'hdr'},
+    h(Logo,{ht:24}),
+    h('div',{className:'ctr'},(idx+1).toString().padStart(2,'0')+' \u00b7 '+tot.toString().padStart(2,'0'))
+  );
+}
+function Slide(props){
+  var cls = 'slide' + (props.alt ? ' sAlt' : '');
+  return h('div',{className:cls},
+    h('div',{className:'acl'}),
+    h('div',{className:'inn'},
+      h(Hdr,{idx:props.idx,tot:props.tot}),
+      h('div',{className:'sm'},
+        props.ey && h('div',{className:'ey'},props.ey),
+        props.title && h('h1',{className:'h1'},props.title),
+        props.sub && h('p',{className:'sub'},props.sub),
+        h('div',{className:'sbody scr'},props.children)
+      )
+    )
+  );
+}
+function SC(props){
+  var lbl=props.lbl,val=props.val,desc=props.desc,mint=props.mint,dark=props.dark;
+  return h('div',{className:'crd'+(mint?' crdM':'')+(dark?' crdD':'')},
+    h('div',{className:'sLbl'+(mint?' sLblM':'')+(dark?' sLblW':'')},lbl),
+    h('div',{className:'sVal'+(mint?' sValM':'')+(dark?' sValW':'')},val),
+    desc && h('div',{className:'sDsc'+(dark?' sDscW':'')},desc)
+  );
+}
+function Pil(props){
+  return h('div',{className:'pil'},
+    h('div',{className:'pilIco'},h(Icon,{name:props.icon,sz:14})),
+    h('div',{className:'pilTit'},props.title),
+    h('div',{className:'pilBod'},props.body)
+  );
+}
+
+/* ════ S01 TITLE ════ */
+function S01(props){
+  var idx=props.idx,tot=props.tot;
+  var imgState=useState(null); var imgSrc=imgState[0]; var setImgSrc=imgState[1];
+  useEffect(function(){
+    var directUrl='https://i.imgur.com/EYHHxAb.png';
+    var img=new Image();
+    img.crossOrigin='anonymous';
+    img.onload=function(){
+      try{
+        var cv=document.createElement('canvas');
+        cv.width=img.naturalWidth; cv.height=img.naturalHeight;
+        var ctx=cv.getContext('2d');
+        ctx.drawImage(img,0,0);
+        var d=ctx.getImageData(0,0,cv.width,cv.height);
+        for(var i=0;i<d.data.length;i+=4){
+          if(d.data[i+3]<10)continue;
+          var mx=Math.max(d.data[i],d.data[i+1],d.data[i+2]);
+          var mn=Math.min(d.data[i],d.data[i+1],d.data[i+2]);
+          var sat=mx===0?0:(mx-mn)/mx;
+          var br=0.299*d.data[i]+0.587*d.data[i+1]+0.114*d.data[i+2];
+          if(sat>0.15){d.data[i]=0x1f;d.data[i+1]=0xbb;d.data[i+2]=0x72;}
+          else{d.data[i]=d.data[i+1]=d.data[i+2]=0x1c;if(br>220)d.data[i+3]=0;}
+        }
+        ctx.putImageData(d,0,0);
+        setImgSrc(cv.toDataURL());
+      }catch(e){setImgSrc(directUrl);}
+    };
+    img.onerror=function(){setImgSrc(directUrl);};
+    fetch(directUrl,{referrerPolicy:'no-referrer'})
+      .then(function(r){return r.blob();})
+      .then(function(blob){img.src=URL.createObjectURL(blob);})
+      .catch(function(){img.src=directUrl;});
+  },[]);
+
+  var stats=[
+    {n:'100K+',l:'Loads Processed'},
+    {n:'$120M+',l:'USKO Revenue'},
+    {n:'3,118',l:'Owner-Operators'},
+    {n:'$5M',l:'Already Invested'},
+  ];
+
+  return h('div',{className:'slide'},
+    h('div',{className:'acl'}),
+    h('div',{className:'tbg'}),
+    h('div',{className:'inn'},
+      h('div',{className:'hdr',style:{flexShrink:0}},
+        h('span',{style:{opacity:0}},'Motion'),
+        h('div',{className:'ctr'},(idx+1).toString().padStart(2,'0')+' \u00b7 '+tot.toString().padStart(2,'0'))
+      ),
+      h('div',{className:'tctr'},
+        imgSrc
+          ? h('img',{src:imgSrc,alt:'Motion',style:{height:52,width:'auto',objectFit:'contain',display:'block',marginBottom:20}})
+          : h('div',{style:{fontSize:'clamp(72px,11vw,130px)',fontWeight:800,letterSpacing:'-.04em',color:'var(--ch)',lineHeight:1,marginBottom:22}},'Motion'),
+        h('div',{className:'ttg'},'Infrastructure for Owner-Operators'),
+        h('p',{className:'tds'},'The operating system for small trucking fleets. Already proven in live operations. Ready to scale.'),
+        h('div',{className:'tsts'},
+          stats.map(function(s,i){
+            return [
+              i>0 && h('div',{key:'d'+i,className:'tsdv'}),
+              h('div',{key:'s'+i,className:'tsi'},
+                h('div',{className:'tsn'},s.n),
+                h('div',{className:'tsl'},s.l)
+              )
+            ];
+          })
+        ),
+        h('div',{className:'tbdg'},'Powered by USKO \u00b7 Founded 2006 \u00b7 Built in Live Operations')
+      )
+    )
+  );
+}
+
+/* ════ S02 PROBLEM ════ */
+function S02(props){
+  var probs=[
+    ['Insurance is too expensive','Small fleets pay disproportionately high premiums with zero group leverage or negotiating power.'],
+    ['Payment cycles are too slow','Net 30\u201345+ day terms create constant cash-flow pressure. Factoring fees typically run 2\u20135%.'],
+    ['Fuel costs erode margin','No volume purchasing power means full market rate on every fill-up, load after load.'],
+    ['Compliance is fully manual','DOT, FMCSA, ELD, HOS, and AB5 requirements add significant cost and administrative overload.'],
+    ['Operations are fragmented','The average owner-operator juggles 10\u201315 disconnected apps and still relies on Excel.'],
+  ];
+  return h(Slide,{ey:'The Problem',title:'Small Fleets Operate Without Infrastructure',idx:props.idx,tot:props.tot,alt:true},
+    h('div',{className:'gA'},
+      h('div',null,
+        probs.map(function(p,i){
+          return h('div',{key:i,className:'pRow'},
+            h('div',{className:'pNum'},(i+1).toString().padStart(2,'0')),
+            h('div',null,h('div',{className:'pTit'},p[0]),h('div',{className:'pDsc'},p[1]))
+          );
+        })
+      ),
+      h('div',{className:'s12',style:{display:'flex',flexDirection:'column'}},
+        h('div',{className:'crd crdD',style:{padding:'20px 22px'}},
+          h('div',{className:'sLbl sLblW',style:{marginBottom:9}},'"The Core Insight"'),
+          h('div',{style:{fontSize:16,fontWeight:700,color:'#fff',lineHeight:1.5}},
+            'Small fleets don\u2019t fail from lack of freight.',
+            h('br'),
+            h('span',{style:{color:'var(--mint)'}},'They fail from lack of infrastructure.')
+          )
+        ),
+        h(SC,{lbl:'Revenue Lost Per Truck / Year',val:'$18K\u2013$36K',desc:'To insurance premiums, factoring fees, and full market-rate fuel'}),
+        h(SC,{lbl:'Carriers Operating \u22646 Trucks',val:'85\u201390%',desc:'Of 1.1M U.S. motor carriers \u2014 the most underserved segment'}),
+        h(SC,{lbl:'Apps Needed Without Motion',val:'10\u201315',desc:'Tools a dispatcher or driver manages without a unified platform'})
+      )
+    )
+  );
+}
+
+/* ════ S03 SOLUTION ════ */
+function S03(props){
+  var pils=[
+    {icon:'shield',title:'Insurance Infrastructure',    body:'Group coverage and in-house safety programs unavailable to solo operators.'},
+    {icon:'dollar',title:'Financial Infrastructure',    body:'Same-day pay on POD upload. 0.80% factoring via Apex Capital. No waiting.'},
+    {icon:'zap',   title:'Fuel Infrastructure',         body:'Direct Pilot/Flying J billing. ~$0.70/gal average savings on every fill.'},
+    {icon:'layers',title:'Compliance & Risk',           body:'DOT filings, safety management, driver credentialing \u2014 fully handled.'},
+  ];
+  return h(Slide,{ey:'Solution',title:'Infrastructure Through One Platform',idx:props.idx,tot:props.tot},
+    h('div',{className:'gA2'},
+      h('div',{className:'g2'},
+        pils.map(function(p){return h(Pil,{key:p.title,icon:p.icon,title:p.title,body:p.body});})
+      ),
+      h('div',{className:'s12',style:{display:'flex',flexDirection:'column'}},
+        h('div',{className:'crd crdM',style:{padding:'18px 20px'}},
+          h('div',{className:'sLbl sLblM'},'Platform Principle'),
+          h('div',{style:{fontSize:16,fontWeight:700,color:'var(--ch)',lineHeight:1.4,marginTop:7}},
+            'The TMS is the interface.',h('br'),
+            h('span',{style:{color:'var(--ac)'}},'The infrastructure is the product.')
+          )
+        ),
+        h(SC,{lbl:'Access Model',val:'One Login',desc:'Insurance \u00b7 Cash flow \u00b7 Fuel \u00b7 Compliance \u00b7 Operations \u2014 free for approved drivers'}),
+        h(SC,{lbl:'Factoring Rate',val:'0.80%',desc:'Apex Capital \u2014 triggered on POD upload, same-day settlement'}),
+        h(SC,{lbl:'Fuel Savings',val:'~$0.70/gal',desc:'Direct Pilot/Flying J billing. Compounding savings every load.'})
+      )
+    )
+  );
+}
+
+/* ════ S04 USKO JOURNEY (Interactive Chart) ════ */
+function S04(props){
+  var idx=props.idx,tot=props.tot;
+  var DATA=[
+    {year:2006,loads:123,  rev:0.252,label:'252k'},
+    {year:2007,loads:295,  rev:0.58, label:'580k'},
+    {year:2008,loads:522,  rev:1.0,  label:'1M+'},
+    {year:2009,loads:1289, rev:1.8,  label:'1.8M+'},
+    {year:2010,loads:2217, rev:2.9,  label:'2.9M+'},
+    {year:2011,loads:2893, rev:8.0,  label:'8M+'},
+    {year:2012,loads:3814, rev:11.0, label:'11M+'},
+    {year:2013,loads:4470, rev:13.0, label:'13M+'},
+    {year:2014,loads:6965, rev:20.0, label:'20M+'},
+    {year:2015,loads:6844, rev:16.0, label:'16M+'},
+    {year:2016,loads:8732, rev:18.0, label:'18M+'},
+    {year:2017,loads:19492,rev:45.0, label:'45M+'},
+    {year:2018,loads:21335,rev:68.0, label:'68M+'},
+    {year:2019,loads:34546,rev:93.0, label:'93M+'},
+    {year:2020,loads:33447,rev:89.0, label:'89M+'},
+    {year:2021,loads:35300,rev:118.0,label:'118M+'},
+    {year:2022,loads:47230,rev:141.0,label:'141M+'},
+    {year:2023,loads:57833,rev:126.0,label:'126M+'},
+    {year:2024,loads:64000,rev:130.0,label:'130M+'},
+    {year:2025,loads:75000,rev:150.0,label:'150M+'},
+  ];
+  var hovState = useState(null);
+  var hov = hovState[0]; var setHov = hovState[1];
+  var metState = useState('both');
+  var met = metState[0]; var setMet = metState[1];
+  var animState = useState(false);
+  var anim = animState[0]; var setAnim = animState[1];
+  useEffect(function(){var t=setTimeout(function(){setAnim(true);},120);return function(){clearTimeout(t);};},[]);
+
+  var W=650,H=185,PL=40,PR=10,PT=22,PB=26;
+  var iW=W-PL-PR, iH=H-PT-PB, n=DATA.length;
+  function xP(i){return PL+(i/(n-1))*iW;}
+  function yR(v){return PT+iH-(v/160)*iH;}
+  function yL(v){return PT+iH-(v/80000)*iH;}
+
+  var rPts = DATA.map(function(d,i){return (i===0?'M':'L')+xP(i).toFixed(1)+','+yR(d.rev).toFixed(1);}).join(' ');
+  var lPts = DATA.map(function(d,i){return (i===0?'M':'L')+xP(i).toFixed(1)+','+yL(d.loads).toFixed(1);}).join(' ');
+  var rArea = rPts+' L'+xP(n-1).toFixed(1)+','+(PT+iH).toFixed(1)+' L'+PL.toFixed(1)+','+(PT+iH).toFixed(1)+' Z';
+  var lArea = lPts+' L'+xP(n-1).toFixed(1)+','+(PT+iH).toFixed(1)+' L'+PL.toFixed(1)+','+(PT+iH).toFixed(1)+' Z';
+  var hd = hov!==null ? DATA[hov] : null;
+
+  var kpis=[{v:'3,118',l:'OO Database'},{v:'200K',l:'Leads by OOs'},{v:'65M',l:'Miles by OOs'},{v:'20 Yrs',l:'Experience'}];
+  var divs=[
+    {n:'USKO Express',  r:'$51M',   d:'200 trucks \u00b7 600 OOs \u00b7 12% dispatch'},
+    {n:'USKO Logistics',r:'$35.5M', d:'10\u201312% margin \u00b7 brokerage division'},
+    {n:'USKO Expedite', r:'$34M',   d:'1,800+ OOs \u00b7 15\u201320% margin \u00b7 short-haul'},
+  ];
+  var gridLines=[0,40,80,120,160];
+  var showRev = met==='rev'||met==='both';
+  var showLds = met==='loads'||met==='both';
+
+  return h('div',{className:'slide sAlt'},
+    h('div',{className:'acl'}),
+    h('div',{className:'inn',style:{paddingBottom:14}},
+      h(Hdr,{idx:idx,tot:tot}),
+      h('div',{className:'sm',style:{paddingTop:12,overflow:'hidden'}},
+        h('div',{className:'ey'},'USKO Journey'),
+        h('div',{style:{display:'flex',gap:16,height:'100%',overflow:'hidden'}},
+          h('div',{style:{display:'flex',flexDirection:'column',gap:7,width:190,flexShrink:0}},
+            h('div',{style:{fontSize:22,fontWeight:800,letterSpacing:'-.025em',color:'var(--ch)',lineHeight:1.1,marginBottom:2}},'20 Years of Growth'),
+            h('div',{style:{fontSize:12,color:'var(--t3)',lineHeight:1.5,marginBottom:3}},'From 123 loads in 2006 to $150M+ revenue and 75,000 loads in 2025.'),
+            kpis.map(function(k,i){
+              return h('div',{key:i,className:'crd',style:{padding:'10px 13px',display:'flex',alignItems:'center',gap:9}},
+                h('div',{style:{width:3,height:28,borderRadius:99,background:'var(--ac)',flexShrink:0}}),
+                h('div',null,
+                  h('div',{style:{fontSize:19,fontWeight:800,color:'var(--ac)',letterSpacing:'-.02em',lineHeight:1}},k.v),
+                  h('div',{style:{fontSize:11,color:'var(--t3)',marginTop:2}},k.l)
+                )
+              );
+            }),
+            h('div',{className:'crd crdM',style:{padding:'10px 13px',marginTop:2}},
+              h('div',{className:'sLbl sLblM',style:{marginBottom:3}},'Global Offices'),
+              h('div',{style:{fontSize:11,color:'var(--t2)',lineHeight:1.6}},'Sacramento \u00b7 KC \u00b7 Monterey \u00b7 Warsaw \u00b7 Kyiv \u00b7 St Marys \u00b7 Houston')
+            )
+          ),
+          h('div',{style:{flex:1,display:'flex',flexDirection:'column',gap:8,minWidth:0}},
+            h('div',{className:'crd',style:{padding:'11px 13px',flex:'1 1 auto',minHeight:0}},
+              h('div',{style:{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:5}},
+                h('div',{className:'sLbl',style:{margin:0}},'Revenue & Loads \u2014 2006\u20132025'),
+                h('div',{style:{display:'flex',gap:5}},
+                  [['both','Both'],['rev','Revenue'],['loads','Loads']].map(function(opt){
+                    var k=opt[0],lb=opt[1];
+                    return h('button',{key:k,onClick:function(){setMet(k);},style:{padding:'2px 9px',borderRadius:99,fontSize:9,fontWeight:700,border:'1px solid',cursor:'pointer',letterSpacing:'.08em',textTransform:'uppercase',borderColor:met===k?'var(--ac)':'var(--bd)',background:met===k?'var(--mt2)':'var(--bg2)',color:met===k?'var(--ac)':'var(--t4)'}},lb);
+                  })
+                )
+              ),
+              h('svg',{width:'100%',viewBox:'0 0 '+W+' '+H,style:{display:'block',overflow:'visible'},onMouseLeave:function(){setHov(null);}},
+                gridLines.map(function(v){return h('line',{key:'g'+v,x1:PL,x2:PL+iW,y1:yR(v),y2:yR(v),stroke:'var(--bd)',strokeWidth:0.7});}),
+                gridLines.map(function(v){return h('text',{key:'y'+v,x:PL-4,y:yR(v)+4,textAnchor:'end',fontSize:7,fill:'var(--t4)',fontFamily:'Inter'},v===0?'0':v+'M');}),
+                DATA.filter(function(_,i){return i%2===0||i===n-1;}).map(function(d){
+                  var i=DATA.indexOf(d);
+                  return h('text',{key:'x'+d.year,x:xP(i),y:PT+iH+13,textAnchor:'middle',fontSize:7,fill:'var(--t4)',fontFamily:'Inter'},d.year);
+                }),
+                showRev&&anim&&h('path',{d:rArea,fill:'rgba(31,187,114,.07)',stroke:'none'}),
+                showLds&&anim&&h('path',{d:lArea,fill:'rgba(31,187,114,.04)',stroke:'none'}),
+                showRev&&anim&&h('path',{d:rPts,fill:'none',stroke:'var(--ac)',strokeWidth:2,strokeLinejoin:'round',strokeLinecap:'round'}),
+                showLds&&anim&&h('path',{d:lPts,fill:'none',stroke:'rgba(31,187,114,.4)',strokeWidth:1.5,strokeLinejoin:'round',strokeLinecap:'round',strokeDasharray:'4 3'}),
+                DATA.map(function(d,i){
+                  return h('rect',{key:'h'+i,x:xP(i)-iW/(2*(n-1)),y:PT,width:iW/(n-1),height:iH,fill:'transparent',cursor:'crosshair',onMouseEnter:function(){setHov(i);}});
+                }),
+                hd&&h('g',{key:'hov'},
+                  showRev&&h('circle',{cx:xP(DATA.indexOf(hd)),cy:yR(hd.rev),r:4,fill:'var(--ac)',stroke:'#fff',strokeWidth:2}),
+                  showLds&&h('circle',{cx:xP(DATA.indexOf(hd)),cy:yL(hd.loads),r:3.5,fill:'rgba(31,187,114,.6)',stroke:'#fff',strokeWidth:1.5}),
+                  h('line',{x1:xP(DATA.indexOf(hd)),x2:xP(DATA.indexOf(hd)),y1:PT,y2:PT+iH,stroke:'var(--bd)',strokeWidth:1,strokeDasharray:'3 2'}),
+                  h('g',{transform:'translate('+Math.min(xP(DATA.indexOf(hd))+8,W-92)+','+( PT+2)+')'},
+                    h('rect',{x:0,y:0,width:88,height:40,rx:6,fill:'var(--ch)',opacity:0.9}),
+                    h('text',{x:7,y:13,fontSize:8,fontWeight:700,fill:'#fff',fontFamily:'Inter'},hd.year),
+                    h('text',{x:7,y:24,fontSize:8,fill:'var(--mint)',fontFamily:'Inter'},'Rev: '+hd.label),
+                    h('text',{x:7,y:34,fontSize:8,fill:'rgba(255,255,255,.6)',fontFamily:'Inter'},'Loads: '+(hd.loads>=1000?(hd.loads/1000).toFixed(0)+'K':hd.loads))
+                  )
+                )
+              )
+            ),
+            h('div',{style:{display:'flex',gap:7,flexShrink:0}},
+              divs.map(function(d,i){
+                return h('div',{key:i,className:'crd',style:{flex:1,padding:'12px 15px'}},
+                  h('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:4}},
+                    h('div',{style:{fontSize:13,fontWeight:700,color:'var(--ch)'}},d.n),
+                    h('div',{style:{fontSize:17,fontWeight:800,color:'var(--ac)'}},d.r)
+                  ),
+                  h('div',{style:{fontSize:11,color:'var(--t3)',lineHeight:1.4}},d.d)
+                );
+              })
+            ),
+            h('div',{className:'crd crdD',style:{padding:'14px 18px',flexShrink:0,display:'flex',alignItems:'center',gap:18}},
+              h('div',{style:{width:44,height:44,borderRadius:'50%',background:'rgba(168,251,208,.15)',border:'2px solid rgba(168,251,208,.3)',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0,fontSize:18,fontWeight:800,color:'var(--mint)'}},'\u{1F9D1}'),
+              h('div',{style:{flex:1}},
+                h('div',{style:{fontSize:16,fontWeight:800,color:'#fff',marginBottom:4}},'Vlad Skots \u2014 Founder & CEO'),
+                h('div',{style:{fontSize:13,color:'rgba(255,255,255,.7)',lineHeight:1.55}},
+                  'Arrived with $1,000 and no English in 2001. Worked nights as a janitor. Became a truck driver \u2014 drove all 48 states. Founded USKO in 2006. ',
+                  h('span',{style:{color:'var(--mint)',fontWeight:600}},'Built entirely for owner-operators.')
+                )
+              )
+            )
+          )
+        )
+      )
+    )
+  );
+}
+
+/* ════ S05 MARKET OPPORTUNITY ════ */
+function S05(props){
+  var idx=props.idx,tot=props.tot;
+  var hovState=useState(null); var hov=hovState[0]; var setHov=hovState[1];
+  var bars=[
+    {yr:'2009',v:559},{yr:'2010',v:610},{yr:'2015',v:726},{yr:'2016',v:676},
+    {yr:'2017',v:700},{yr:'2020',v:732},{yr:'2021',v:876},{yr:'2022',v:941},
+    {yr:'2023',v:1010},{yr:'2024',v:1020},{yr:'2034*',v:1510,proj:true},
+  ];
+  var W2=460,H2=130,PL2=34,PR2=8,PT2=18,PB2=22;
+  var iW2=W2-PL2-PR2,iH2=H2-PT2-PB2,nb=bars.length;
+  var maxV=1600;
+  function xB(i){return PL2+(i/(nb-1))*iW2;}
+  function yB(v){return PT2+iH2-(v/maxV)*iH2;}
+  var bW=Math.max(14,iW2/nb-5);
+  var segs=[
+    {l:'Micro-Fleets (1\u20132 trucks)',pct:60},
+    {l:'Small Fleets (3\u20136 trucks)',pct:26},
+    {l:'Fleets 7\u201319 trucks',       pct:9},
+    {l:'Large Fleets (19+)',        pct:5},
+  ];
+  var colors=['var(--ac)','rgba(31,187,114,.55)','rgba(31,187,114,.3)','var(--bg3)'];
+  return h(Slide,{ey:'Market Opportunity',title:'A Fragmented $1 Trillion Market',sub:'~$940\u2013950B (2022 est.) projected to reach $1.51T by 2034. Small fleets dominate by count but remain underserved.',idx:idx,tot:tot,alt:true},
+    h('div',{className:'gA'},
+      h('div',{className:'s10',style:{display:'flex',flexDirection:'column'}},
+        h('div',{className:'g2',style:{gap:10}},
+          [
+            {lbl:'U.S. Trucking Revenue',val:'~$1.02T',desc:'2024 est. \u00b7 projected $1.51T by 2034 (ATA)',mint:false},
+            {lbl:'Active Motor Carriers',val:'1.87M',desc:'Registered with FMCSA (fmcsa.dot.gov)',mint:false},
+            {lbl:'Carriers \u22646 Trucks',val:'86%+',desc:'Small fleets, micro-fleets, and OOs combined',mint:false},
+            {lbl:'Active Owner-Operators',val:'710K',desc:'~16% of all drivers \u00b7 core Motion audience',mint:false},
+          ].map(function(s,i){return h(SC,{key:i,lbl:s.lbl,val:s.val,desc:s.desc,mint:s.mint});})
+        ),
+        h('div',{className:'crd',style:{padding:'11px 13px',marginTop:10}},
+          h('div',{className:'sLbl',style:{marginBottom:7}},'U.S. Trucking Revenue \u2014 Historical & Projected (hover bars)'),
+          h('svg',{width:'100%',viewBox:'0 0 '+W2+' '+H2,style:{display:'block',overflow:'visible'},onMouseLeave:function(){setHov(null);}},
+            [0,400,800,1200].map(function(v){return h('line',{key:'g'+v,x1:PL2,x2:PL2+iW2,y1:yB(v),y2:yB(v),stroke:'var(--bd)',strokeWidth:0.7});}),
+            [0,400,800,1200].map(function(v){return h('text',{key:'y'+v,x:PL2-4,y:yB(v)+4,textAnchor:'end',fontSize:7,fill:'var(--t4)',fontFamily:'Inter'},v===0?'$0':v>=1000?'$'+v/1000+'T':'$'+v+'B');}),
+            bars.map(function(d,i){
+              var bx=xB(i)-bW/2; var bh=(d.v/maxV)*iH2; var by=yB(d.v);
+              var isH=hov===i;
+              return h('g',{key:i,onMouseEnter:function(){setHov(i);},onMouseLeave:function(){setHov(null);},cursor:'pointer'},
+                h('rect',{x:bx,y:by,width:bW,height:bh,rx:3,fill:d.proj?'rgba(31,187,114,.22)':(isH?'var(--ac)':'rgba(31,187,114,.6)'),stroke:isH?'var(--ac)':'none',strokeWidth:1}),
+                h('text',{x:xB(i),y:PT2+iH2+13,textAnchor:'middle',fontSize:7,fill:d.proj?'var(--ac)':'var(--t4)',fontFamily:'Inter'},d.yr),
+                isH&&h('text',{x:xB(i),y:by-4,textAnchor:'middle',fontSize:8,fontWeight:700,fill:'var(--ac)',fontFamily:'Inter'},'$'+(d.v>=1000?(d.v/1000).toFixed(2)+'T':d.v+'B'))
+              );
+            })
+          ),
+          h('div',{style:{fontSize:9,color:'var(--t4)',marginTop:4}},'*2034 projection (lighter bar). Source: ATA / FMCSA.')
+        )
+      ),
+      h('div',{className:'s10',style:{display:'flex',flexDirection:'column'}},
+        h('div',{className:'crd crdD',style:{padding:'18px 20px'}},
+          h('div',{className:'sLbl sLblW',style:{marginBottom:7}},'Motion TAM'),
+          h('div',{style:{fontSize:40,fontWeight:800,color:'var(--mint)',letterSpacing:'-.04em',lineHeight:1}},'$4B+'),
+          h('div',{style:{fontSize:12,color:'rgba(255,255,255,.5)',marginTop:7,lineHeight:1.55}},'U.S. small-fleet OO operations, insurance, factoring, and fuel services'),
+          h('div',{style:{fontSize:9,color:'rgba(255,255,255,.28)',marginTop:8,borderTop:'1px solid rgba(255,255,255,.08)',paddingTop:8}},'ATA 2022 est. ~$940\u2013950B \u00b7 2024 est. ~$1.02T \u00b7 projected >$1.51T by 2034')
+        ),
+        h('div',{className:'crd',style:{padding:'13px 15px'}},
+          h('div',{className:'sLbl',style:{marginBottom:9}},'Fleet Size Distribution (For-Hire Carriers)'),
+          segs.map(function(s,i){
+            return h('div',{key:i,style:{display:'flex',alignItems:'center',gap:8,marginBottom:7}},
+              h('div',{style:{width:80,fontSize:10,color:'var(--t3)',fontWeight:500,lineHeight:1.3}},s.l),
+              h('div',{style:{flex:1,height:6,borderRadius:99,background:'var(--bg3)',overflow:'hidden'}},
+                h('div',{style:{height:'100%',width:s.pct+'%',borderRadius:99,background:colors[i]}})
+              ),
+              h('div',{style:{fontSize:11,fontWeight:700,color:'var(--t2)',minWidth:28,textAlign:'right'}},s.pct+'%')
+            );
+          })
+        ),
+        h('div',{className:'crd crdM',style:{padding:'11px 14px'}},
+          h('div',{className:'sLbl sLblM',style:{marginBottom:6}},'Industry Scale'),
+          h('div',{style:{display:'flex',gap:14}},
+            [{v:'11.46B',l:'Tons annually'},{v:'3.5%',l:'Share of U.S. GDP'},{v:'70%',l:'Freight by truck'}].map(function(k,i){
+              return h('div',{key:i},h('div',{style:{fontSize:16,fontWeight:800,color:'var(--ac)'}},k.v),h('div',{style:{fontSize:10,color:'var(--t3)'}},k.l));
+            })
+          )
+        )
+      )
+    )
+  );
+}
+
+/* ════ S06 COMPETITIVE LANDSCAPE ════ */
+function S06(props){
+  // Legend: 'y'=native, 'p'=partial/via partner, 'n'=not offered
+  // Features: Dispatch, Driver App, Safety Mgmt, Accounting, Communication, Insurance, Fuel, Factoring, Run Own Authority
+  var features=[
+    'Dispatch',
+    'Driver App',
+    'Safety Management',
+    'Accounting',
+    'Communication',
+    'Insurance',
+    'Fuel Discounts',
+    'Factoring',
+    'Run Own Authority',
+  ];
+  // Motion: all native
+  var motion=  ['y','y','y','y','y','y','y','y','y'];
+  // TruckSmarter: dispatch/load board, driver app, fuel, factoring native; insurance indirect; no safety stack; run authority yes
+  var truckS=  ['y','y','n','n','n','p','y','y','y'];
+  // DAT: load board/dispatch, some factoring partners, no driver app, no insurance/safety/fuel natively
+  var dat=     ['y','n','n','n','n','n','n','p','y'];
+  // CloudTrucks: dispatch, insurance (under CT authority), fuel card, factoring-like fast pay; no run own authority
+  var cloud=   ['y','n','y','p','n','y','y','y','n'];
+
+  function Cell(val, isMotion){
+    if(isMotion) return h('div',{className:'ctRC'},h(Ck,{sz:13}));
+    if(val==='y') return h('div',{className:'ctRC'},h(Ck,{sz:12}));
+    if(val==='p') return h('div',{className:'ctRC'},
+      h('span',{style:{fontSize:10,fontWeight:700,color:'#f59e0b',letterSpacing:'.04em'}},'~')
+    );
+    return h('div',{className:'ctRC'},h(Xm,{sz:11}));
   }
 
-  if (logoUrl) return h('img', { src: logoUrl, alt: 'Motion', style: { height: 26, width: 'auto', objectFit: 'contain', flexShrink: 0 } });
-  return h('div', { style: { width:38, height:38, borderRadius:10, border:'1px solid rgba(255,255,255,0.15)', background:'rgba(255,255,255,0.05)', display:'flex', alignItems:'center', justifyContent:'center', color:'var(--mint)', fontFamily:"'DM Mono',monospace", fontWeight:700, fontSize:18 }}, 'M');
-}
-
-
-// ── Icons (inline SVG) ──────────────────────────────────────────
-const icons = {
-  chevLeft:  `<polyline points="15 18 9 12 15 6"/>`,
-  chevRight: `<polyline points="9 18 15 12 9 6"/>`,
-  check:     `<polyline points="20 6 9 12 4 10"/>`,
-  truck:     `<rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>`,
-  bot:       `<rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/><line x1="8" y1="16" x2="8" y2="16"/><line x1="16" y1="16" x2="16" y2="16"/>`,
-  shield:    `<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>`,
-  dollar:    `<line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>`,
-  file:      `<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>`,
-  alert:     `<path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>`,
-  brain:     `<path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96-.46 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96-.46 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.98-3A2.5 2.5 0 0 0 14.5 2Z"/>`,
-  cpu:       `<rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/>`,
-  route:     `<circle cx="6" cy="19" r="3"/><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"/><circle cx="18" cy="5" r="3"/>`,
-  search:    `<circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>`,
-  bar:       `<line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>`,
-  msg:       `<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>`,
-};
-
-function Icon({ name, size = 18, cls = '' }) {
-  return h('svg', {
-    xmlns: 'http://www.w3.org/2000/svg',
-    width: size, height: size,
-    viewBox: '0 0 24 24',
-    fill: 'none', stroke: 'currentColor',
-    strokeWidth: 2, strokeLinecap: 'round', strokeLinejoin: 'round',
-    className: cls,
-    dangerouslySetInnerHTML: { __html: icons[name] }
-  });
-}
-
-// ── Shared components ───────────────────────────────────────────
-function Header({ index, total }) {
-  return h('div', { className: 'deck-header' },
-    h('div', { className: 'logo-pill' },
-      h(Logo, { variant: 'header' }),
-    ),
-    h('div', { className: 'slide-counter' },
-      String(index + 1).padStart(2, '0') + ' / ' + String(total).padStart(2, '0')
-    )
-  );
-}
-
-function SlideShell({ children, eyebrow, title, subtitle, index, total }) {
-  return h('div', { className: 'slide' },
-    h('div', { className: 'slide-glow' }),
-    h('div', { className: 'slide-inner' },
-      h(Header, { index, total }),
-      h('div', { className: 'slide-main' },
-        eyebrow && h('div', { className: 'eyebrow' }, eyebrow),
-        title   && h('h1',  { className: 'slide-title' }, title),
-        subtitle && h('p', { className: 'slide-subtitle' }, subtitle),
-        h('div', { className: 'slide-body scroll-body' }, children)
-      )
-    )
-  );
-}
-
-function StatCard({ label, value, sublabel }) {
-  return h('div', { className: 'card' },
-    h('div', { className: 'card-label' }, label),
-    h('div', { className: 'card-value' }, value),
-    sublabel && h('div', { className: 'card-sub' }, sublabel)
-  );
-}
-
-function FeatureCard({ iconName, title, body }) {
-  return h('div', { className: 'card', style: { padding: '18px 20px' } },
-    h('div', { className: 'feat-icon' }, h(Icon, { name: iconName })),
-    h('div', { className: 'feat-title' }, title),
-    h('div', { className: 'feat-body'  }, body)
-  );
-}
-
-function CheckChip({ label }) {
-  return h('div', { className: 'chip' },
-    h('svg', { xmlns: 'http://www.w3.org/2000/svg', width: 16, height: 16, viewBox: '0 0 24 24', fill: 'none', stroke: 'var(--mint)', strokeWidth: 2.5, strokeLinecap: 'round', strokeLinejoin: 'round', dangerouslySetInnerHTML: { __html: '<polyline points="20 6 9 12 4 10"/>' } }),
-    label
-  );
-}
-
-function CompRow({ label, motion=true, generic=false, legacy=false, point=false }) {
-  const Cell = (on) => h('div', { className: 'comp-cell' },
-    on
-      ? h('svg', { xmlns: 'http://www.w3.org/2000/svg', width: 16, height: 16, viewBox: '0 0 24 24', fill: 'none', stroke: 'var(--mint)', strokeWidth: 2.5, strokeLinecap: 'round', strokeLinejoin: 'round', dangerouslySetInnerHTML: { __html: '<polyline points="20 6 9 12 4 10"/>' } })
-      : h('span', { className: 'comp-dash' }, '—')
-  );
-  return h('div', { className: 'comp-row' },
-    h('div', { className: 'comp-row-label' }, label),
-    Cell(motion), Cell(generic), Cell(legacy), Cell(point)
-  );
-}
-
-// ── Slides ──────────────────────────────────────────────────────
-
-function TitleSlide({ index, total }) {
-  const [mapUrl, setMapUrl] = useState('https://images.unsplash.com/photo-1524661135-423995f22d0b?w=1600&q=80');
-  useEffect(() => {
-    fetch('https://i.imgur.com/CWcA1Uv.png', { referrerPolicy: 'no-referrer' })
-      .then(r => { if (!r.ok) throw new Error('blocked'); return r.blob(); })
-      .then(blob => setMapUrl(URL.createObjectURL(blob)))
-      .catch(() => {});
-  }, []);
-  const features = [
-    { iconName: 'file',  title: 'Automatic Load Building', body: 'Build draft loads from emails, tenders, PDFs, BOLs, and rate cons while flagging missing data before load creation.' },
-    { iconName: 'alert', title: 'AI Exception Prediction',  body: 'Predict late pickups, delivery failures, and detention risk so ops teams can act before loads become problems.' },
-    { iconName: 'brain', title: 'AI Next Best Action Copilot', body: 'Tell reps what to do next on each load—call the carrier, update the customer, request POD, or resolve missing info.' },
+  var bullets=[
+    'One of the few platforms purpose-built for owner-operators that natively combines all operational and financial infrastructure',
+    'Competitors offer individual features or partner integrations \u2014 Motion owns the full stack vertically through USKO',
+    '20 years of live operational history creates a data and infrastructure moat no new entrant can replicate quickly',
   ];
-  return h('div', { className: 'slide' },
-    h('div', { style: { position:'absolute', inset:0, backgroundSize:'cover', backgroundPosition:'center', backgroundImage:`linear-gradient(rgba(56,56,56,0.66),rgba(56,56,56,0.84)),url('${mapUrl}')` } }),
-    h('div', { className: 'title-radial' }),
-    h('div', { className: 'slide-inner' },
-      h('div', { style: { display:'flex', justifyContent:'space-between', alignItems:'center' } },
-        h('div', { style: { fontSize:12, textTransform:'uppercase', letterSpacing:'.3em', color:'rgba(255,255,255,0.95)', fontWeight:500 } }, 'Motion Investor Deck'),
-        h('div', { style:{border:'1.5px solid rgba(255,255,255,0.5)',borderRadius:99,padding:'5px 16px',fontSize:12,letterSpacing:'.26em',color:'rgba(255,255,255,0.95)',fontFamily:"'DM Mono',monospace",background:'rgba(255,255,255,0.08)'} }, String(index + 1).padStart(2, '0') + ' / ' + String(total).padStart(2, '0'))
-      ),
-      h('div', { className: 'title-center' },
-        h(Logo, { variant: 'title' }),
-        h('div', { className: 'title-tag' }, 'AI Powered Transportation Management System'),
-        h('p', { className: 'title-desc' }, 'Built for owner-operators and small fleets. Automate operations, predict problems, and run a smarter trucking business.')
-      ),
-      h('div', { style: { display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:14, paddingBottom:8 } },
-        ...features.map(f => h(FeatureCard, { key: f.title, ...f }))
-      ),
-      h('div', { style: { textAlign:'center', paddingBottom:40, fontSize:13, color:'rgba(255,255,255,0.55)' } },
-        'The AI operating system for modern small-fleet trucking'
-      )
-    )
-  );
-}
 
-const agendaItems = [
-  'Problem','Solution & Product','Market Opportunity','Business Model',
-  'Traction & Roadmap','Go-To-Market Strategy','Competitive Landscape',
-  'Technology','Team','Financials','Fundraising Ask'
-];
-
-function AgendaSlide({ index, total }) {
-  return h(SlideShell, { eyebrow:'Agenda', title:'The Motion investor story', subtitle:'A modern AI TMS, embedded services, and a focused wedge into the most underserved segment in trucking.', index, total },
-    h('div', { className: 'agenda-grid' },
-      ...agendaItems.map((item, i) =>
-        h('div', { key: item, className: 'agenda-card' },
-          h('div', { className: 'agenda-num' }, String(i + 1).padStart(2, '0')),
-          h('div', { className: 'agenda-name' }, item)
-        )
-      )
-    )
-  );
-}
-
-function ProblemSlide({ index, total }) {
-  const points = [
-    'Most TMS platforms are built for brokers or enterprise carriers—not owner-operators and 1–10 truck fleets.',
-    'Load entry, check calls, customer updates, document handling, and billing still rely on email, texts, spreadsheets, and manual rekeying.',
-    'Teams discover service failures too late, leaving dispatch reactive instead of proactive.',
-    'Insurance, factoring, fuel economics, and compliance pressure margins for smaller operators more than anyone else.',
+  var fragItems=[
+    {label:'Safety & Compliance',detail:'DOT filings, driver credentials, inspections, incident reporting'},
+    {label:'Dispatch & Operations',detail:'Load board, ELD, route optimization, driver coordination'},
+    {label:'Back Office',detail:'Invoicing, payroll, factoring portal, fuel card, accounting'},
   ];
-  return h(SlideShell, { eyebrow:'Problem', title:'Owner-operators run real businesses without modern operating systems', subtitle:'The smallest carriers carry massive operational burden—while using fragmented tools, manual workflows, and reactive decision-making.', index, total },
-    h('div', { className: 'grid-asym' },
-      h('div', { style:{display:'grid',gap:10} },
-        ...points.map(p => h('div', { key:p, className:'card', style:{fontSize:13,color:'rgba(255,255,255,0.78)',lineHeight:1.6} }, p))
-      ),
-      h('div', { style:{display:'grid',gap:12,alignContent:'start'} },
-        h(StatCard, { label:'App overload',  value:'10+',      sublabel:'tools across dispatch, docs, billing, and compliance' }),
-        h(StatCard, { label:'Ops model',     value:'Reactive', sublabel:'issues surface after check call misses or appointment problems' }),
-        h(StatCard, { label:'AI gap',        value:'0',        sublabel:'small-fleet workflows still lack real automation and intelligence' }),
-      )
-    )
-  );
-}
 
-function SolutionSlide({ index, total }) {
-  const pillars = [
-    { iconName:'truck',  title:'Core Operations',    body:'Dispatch, load management, driver workflows, document handling, communication, and invoicing in one flow.' },
-    { iconName:'bot',    title:'AI Automation',      body:'Turn manual work into approval flows with AI-driven intake, load building, exception prediction, and next-best-action guidance.' },
-    { iconName:'shield', title:'Compliance & Safety', body:'Manage credentials, document expirations, onboarding, and compliance visibility without separate tools.' },
-    { iconName:'dollar', title:'Embedded Services',  body:'Insurance, factoring, fuel rebate, and compliance services improve value while increasing Motion revenue per account.' },
-  ];
-  const services = ['Insurance','Factoring (1% surcharge)','Fuel rebate','Compliance services'];
-  return h(SlideShell, { eyebrow:'Solution', title:'Motion is the AI operating system for owner-operators and small fleets', subtitle:'Motion combines AI automation, core TMS workflows, and embedded services into one platform that improves speed, consistency, margin, and control.', index, total },
-    h('div', { className:'grid-asym2' },
-      h('div', { className:'grid2' }, ...pillars.map(p => h(FeatureCard, { key:p.title, ...p }))),
-      h('div', { className:'card card-mint', style:{padding:20} },
-        h('div', { style:{fontSize:10,textTransform:'uppercase',letterSpacing:'.28em',color:'var(--mint)',marginBottom:14} }, 'Motion service layer'),
-        h('div', { style:{display:'grid',gap:8} }, ...services.map(s => h(CheckChip, { key:s, label:s }))),
-        h('p', { style:{marginTop:16,fontSize:12,lineHeight:1.65,color:'rgba(255,255,255,0.7)'} },
-          'Motion helps smaller carriers operate with the sophistication of larger fleets while reducing admin burden and improving unit economics.'
-        )
-      )
-    )
-  );
-}
-
-function ProductSlide({ index, total }) {
-  const modules = [
-    { iconName:'truck',  title:'Dispatch operations',   body:'Load board workflows, load management, truck schedules, ETA tools, and customer / broker management.' },
-    { iconName:'msg',    title:'Communication hub',     body:'Draft carrier emails, delay notices, customer updates, check calls, and summarize threads with AI assistance.' },
-    { iconName:'file',   title:'Document intelligence', body:'Read BOLs, PODs, rate cons, COIs, W9s, and compliance documents while detecting errors and mismatches.' },
-    { iconName:'dollar', title:'Accounting & finance',  body:'Invoicing, billing, commissions, payment support, and future ERP and settlement workflows.' },
-    { iconName:'shield', title:'Safety & compliance',   body:'Carrier and driver profiles, DQ file support, expiration alerts, and compliance process visibility.' },
-    { iconName:'bot',    title:'AI copilots',           body:'Live load summaries, natural-language search, performance insights, and after-hours assistance on the roadmap.' },
-  ];
-  return h(SlideShell, { eyebrow:'Product overview', title:'An AI-powered operations platform built around everyday trucking workflows', subtitle:'The product combines practical TMS modules with AI capabilities that directly reduce manual work and elevate operator performance.', index, total },
-    h('div', { className:'grid3', style:{marginBottom:14} }, ...modules.map(m => h(FeatureCard, { key:m.title, ...m }))),
-    h('div', { className:'card', style:{fontSize:13,color:'rgba(255,255,255,0.72)',padding:'14px 18px'} },
-      h('span', { style:{fontWeight:600,color:'var(--mint)'} }, 'Top 3 AI differentiators: '),
-      'Automatic Load Building, AI Exception Prediction, and AI Next Best Action Copilot.'
-    )
-  );
-}
-
-function MarketSlide({ index, total }) {
-  return h(SlideShell, { eyebrow:'Market opportunity', title:'A massive, underserved software market inside trucking', subtitle:'Motion focuses on small carriers and owner-operators—a fragmented but massive segment that still lacks purpose-built AI-native software.', index, total },
-    h('div', { className:'grid-asym3' },
-      h('div', { style:{display:'grid',gap:12} },
-        h(StatCard, { label:'TAM', value:'$18B+', sublabel:'broader transportation software and operations stack' }),
-        h(StatCard, { label:'SAM', value:'$4B+',  sublabel:'U.S. small-fleet and owner-operator operations software opportunity' }),
-        h(StatCard, { label:'SOM', value:'$150M+',sublabel:'attainable wedge through AI TMS + services bundling' }),
-      ),
-      h('div', { className:'card', style:{padding:22} },
-        h('div', { style:{fontSize:10,textTransform:'uppercase',letterSpacing:'.28em',color:'rgba(255,255,255,0.45)',marginBottom:16} }, 'Why this wedge matters'),
-        h('div', { className:'space-y' },
-          h('p', { className:'why-p' }, 'Owner-operators and 1–10 truck fleets make up a substantial share of carrier count, but are poorly served by enterprise-first tooling.'),
-          h('p', { className:'why-p' }, 'They feel the most friction from admin burden, margin pressure, compliance complexity, and limited visibility.'),
-          h('p', { className:'why-p' }, 'No AI-native platform is purpose-built for this segment at scale.'),
+  return h(Slide,{ey:'Competitive Landscape',title:'One of the Deepest Platforms for Owner-Operators',sub:'Few competitors natively combine operations, insurance, factoring, fuel, and compliance in one login. Most offer point solutions or partner integrations.',idx:props.idx,tot:props.tot,alt:true},
+    h('div',{className:'gA2'},
+      h('div',null,
+        h('div',{className:'crd crdD',style:{padding:'16px 20px',marginBottom:11}},
+          h('div',{className:'sLbl sLblW',style:{marginBottom:9}},'Our Differentiation'),
+          h('div',{style:{fontSize:14,fontWeight:700,color:'#fff',lineHeight:1.5}},'Motion is one of the only platforms purpose-built for owner-operators that ',h('span',{style:{color:'var(--mint)'}},'natively integrates'),  ' operations, insurance, factoring, fuel, and compliance \u2014 not via third-party add-ons, but through 20 years of in-house USKO infrastructure.'),
+          h('div',{style:{marginTop:11,display:'flex',flexDirection:'column',gap:7}},
+            bullets.map(function(t,i){
+              return h('div',{key:i,style:{display:'flex',gap:7,alignItems:'flex-start'}},
+                h(Ck,{sz:11}),
+                h('div',{style:{fontSize:12,color:'rgba(255,255,255,.82)',lineHeight:1.5}},t)
+              );
+            })
+          )
         ),
-        h('div', { style:{marginTop:18,height:10,borderRadius:99,background:'rgba(255,255,255,0.1)',overflow:'hidden'} },
-          h('div', { style:{height:'100%',width:'78%',borderRadius:99,background:'var(--mint)'} })
-        ),
-        h('div', { style:{marginTop:6,fontSize:11,color:'rgba(255,255,255,0.4)'} }, 'Serviceable market concentration in small-fleet segment')
-      )
-    )
-  );
-}
-
-function BusinessModelSlide({ index, total }) {
-  const tiers = [['Solo Operator','$99–149/mo'],['Small Fleet','$249–499/mo'],['Pro / Growth','Custom pricing']];
-  const layers = [
-    ['SaaS subscription',true],['Insurance revenue',true],['Factoring (1% surcharge)',true],
-    ['Fuel rebate revenue',true],['Compliance services',true],['Future partner marketplace',false]
-  ];
-  return h(SlideShell, { eyebrow:'Business model', title:'Recurring SaaS revenue with layered embedded services', subtitle:'Motion monetizes software subscriptions while expanding revenue per customer through insurance, factoring, fuel, and compliance services.', index, total },
-    h('div', { className:'grid-asym3' },
-      h('div', { style:{display:'grid',gap:10} },
-        ...tiers.map(([name,price]) =>
-          h('div', { key:name, className:'card', style:{padding:18} },
-            h('div', { style:{fontSize:16,fontWeight:600} }, name),
-            h('div', { style:{marginTop:6,color:'var(--mint)',fontSize:20,fontWeight:600} }, price)
+        h('div',{className:'crd',style:{padding:'12px 16px'}},
+          h('div',{className:'sLbl',style:{marginBottom:8}},'Fragmented Tools Replaced by Motion'),
+          h('div',{style:{display:'flex',flexDirection:'column',gap:7}},
+            fragItems.map(function(d,i){
+              return h('div',{key:i,style:{display:'flex',alignItems:'flex-start',gap:10,padding:'7px 0',borderTop:i===0?'none':'1px solid var(--bd)'}},
+                h('div',{style:{fontSize:13,fontWeight:700,color:'var(--ac)',minWidth:130}},d.label),
+                h('div',{style:{fontSize:12,color:'var(--t3)',lineHeight:1.45}},d.detail)
+              );
+            })
           )
         )
       ),
-      h('div', { className:'card', style:{padding:20} },
-        h('div', { style:{fontSize:10,textTransform:'uppercase',letterSpacing:'.28em',color:'rgba(255,255,255,0.45)',marginBottom:14} }, 'Revenue per customer stack'),
-        h('div', { style:{display:'grid',gap:8} },
-          ...layers.map(([item,hi]) =>
-            h('div', { key:item, className:'layer-row' },
-              h('span', { style:{fontSize:13,color:'rgba(255,255,255,0.82)'} }, item),
-              h('span', { className: hi ? 'layer-tag' : 'layer-tag-dim' }, 'Layer')
+      h('div',{style:{display:'flex',flexDirection:'column',gap:0}},
+        h('div',{className:'ctbl'},
+          h('div',{className:'ctHd'},
+            h('div',{className:'ctHC'},'Feature'),
+            h('div',{className:'ctHC ctHH'},'Motion'),
+            h('div',{className:'ctHC'},'TruckSmarter'),
+            h('div',{className:'ctHC'},'DAT'),
+            h('div',{className:'ctHC'},'CloudTrucks')
+          ),
+          features.map(function(f,i){
+            return h('div',{key:f,className:'ctR'},
+              h('div',{className:'ctRN'},f),
+              Cell(motion[i], true),
+              Cell(truckS[i], false),
+              Cell(dat[i],    false),
+              Cell(cloud[i],  false)
+            );
+          })
+        ),
+        /* Legend + footnote */
+        h('div',{style:{display:'flex',alignItems:'center',gap:16,padding:'8px 12px',background:'var(--bg2)',borderRadius:'0 0 14px 14px',borderTop:'1px solid var(--bd)',flexWrap:'wrap'}},
+          h('div',{style:{display:'flex',alignItems:'center',gap:5}},
+            h(Ck,{sz:10}),
+            h('span',{style:{fontSize:10,color:'var(--t3)'}},'Native')
+          ),
+          h('div',{style:{display:'flex',alignItems:'center',gap:5}},
+            h('span',{style:{fontSize:12,fontWeight:700,color:'#f59e0b'}},'~'),
+            h('span',{style:{fontSize:10,color:'var(--t3)'}},'Partial / via partner')
+          ),
+          h('div',{style:{display:'flex',alignItems:'center',gap:5}},
+            h(Xm,{sz:10}),
+            h('span',{style:{fontSize:10,color:'var(--t3)'}},'Not offered')
+          ),
+          h('div',{style:{marginLeft:'auto',fontSize:9,color:'var(--t4)',fontStyle:'italic'}},'Based on publicly available feature documentation. \u2020CloudTrucks operates under its own authority; OOs do not run independently.')
+        )
+      )
+    )
+  );
+}
+
+/* ════ S07 PLATFORM ════ */
+function S07(props){
+  var pils=[
+    {icon:'shield',title:'Insurance Infrastructure',    body:'Group coverage, in-house safety programs, risk management \u2014 built for small fleets.'},
+    {icon:'dollar',title:'Financial Infrastructure',    body:'Instant factoring on POD. Same-day cash. Cash flow as a platform feature.'},
+    {icon:'truck', title:'Operational Infrastructure',  body:'Dispatch, load management, driver settlement, compliance \u2014 one login.'},
+    {icon:'layers',title:'Risk & Compliance',           body:'DOT safety, driver credentialing, regulatory compliance \u2014 fully embedded.'},
+  ];
+  var loads=[
+    {id:'#4821',route:'Chicago \u2192 Dallas',dr:'J. Martinez',st:'In Transit',   tc:'tgO'},
+    {id:'#4822',route:'Atlanta \u2192 Miami', dr:'T. Williams', st:'POD Uploaded', tc:'tgG'},
+    {id:'#4823',route:'Denver \u2192 Phoenix',dr:'R. Singh',    st:'Dispatched',   tc:'tgB'},
+  ];
+  var tags=['Insurance','Factoring','Fuel','Compliance','Dispatch','Accounting','Driver App','Safety'];
+  return h(Slide,{ey:'Platform',title:'Motion Is Infrastructure, Not Software',sub:'A financial, operational, and risk infrastructure platform for small fleets \u2014 delivered through a single login.',idx:props.idx,tot:props.tot},
+    h('div',{className:'gA2'},
+      h('div',{className:'g2'},pils.map(function(p){return h(Pil,{key:p.title,icon:p.icon,title:p.title,body:p.body});})),
+      h('div',{className:'s10',style:{display:'flex',flexDirection:'column'}},
+        h('div',{className:'crd crdM',style:{padding:'13px 16px'}},
+          h('div',{className:'sLbl sLblM'},'Platform Principle'),
+          h('div',{style:{fontSize:15,fontWeight:700,color:'var(--ch)',lineHeight:1.4,marginTop:6}},
+            'The TMS is the interface.',h('br'),h('span',{style:{color:'var(--ac)'}},'The infrastructure is the product.')
+          )
+        ),
+        h('div',{className:'mkup'},
+          h('div',{className:'mkBar'},[0,1,2].map(function(i){return h('div',{key:i,className:'mkDot'});}),h('span',{className:'mkLbl'},'Motion \u00b7 Dispatch')),
+          h('div',{className:'mkBod'},
+            loads.map(function(l,i){
+              var tagClass = l.tc==='tgO'?'tgO':l.tc==='tgB'?'tgB':'tgG';
+              return h('div',{key:i,className:'mkRow'},
+                h('div',null,h('div',{style:{fontSize:11,fontWeight:600,color:'var(--t)'}},l.id+' \u00b7 '+l.route),h('div',{style:{fontSize:9,color:'var(--t4)',marginTop:1}},l.dr)),
+                h('div',{className:tagClass},l.st)
+              );
+            })
+          )
+        ),
+        h('div',{style:{padding:'11px 14px',borderRadius:13,background:'var(--bg2)',border:'1px solid var(--bd)',marginTop:6}},
+          h('div',{style:{fontSize:11,fontWeight:700,color:'var(--ch)',marginBottom:6}},'App fragmentation eliminated.'),
+          h('div',{style:{display:'flex',flexWrap:'wrap',gap:5}},
+            tags.map(function(tag){
+              return h('div',{key:tag,style:{padding:'3px 9px',borderRadius:99,border:'1px solid var(--bd)',background:'var(--bg)',fontSize:9,fontWeight:600,color:'var(--t2)',letterSpacing:'.1em',textTransform:'uppercase'}},tag);
+            })
+          )
+        )
+      )
+    )
+  );
+}
+
+/* ════ S08 REVENUE MODEL ════ */
+function S08(props){
+  var eng=[
+    {name:'Insurance',          det:'Group rates \u00b7 safety program \u00b7 in-house risk management',      badge:'Primary Engine'},
+    {name:'Factoring',          det:'0.80% fee via Apex Capital \u00b7 triggered on POD \u00b7 same-day pay', badge:'Transaction'},
+    {name:'Fuel',               det:'~$0.70/gal savings \u00b7 direct Pilot/Flying J \u00b7 margin share',   badge:'Volume Rebate'},
+    {name:'Compliance Services',det:'DOT filing \u00b7 credentialing \u00b7 safety management',             badge:'Recurring'},
+    {name:'Load Board',         det:'Platform-native load access and freight discovery',                    badge:'Embedded'},
+    {name:'Membership Fee',     det:'Optional future tier \u2014 not required for core unit economics',    badge:'Future Layer'},
+  ];
+  var milestones=[{yr:'Year 1',u:'1,000 units',r:'$13.3M',a:true},{yr:'Year 3',u:'10,000 units',r:'$132.6M',a:false},{yr:'Year 10',u:'100,000 units',r:'$1.33B',a:false}];
+  var perOO=[['Insurance','$6,833'],['Factoring (1%)','$3,000'],['Fuel rebate','$2,400'],['Load Board','$1,440'],['Compliance','$192'],['Membership Fee','$300']];
+  return h(Slide,{ey:'Revenue Model',title:'Infrastructure Monetization',sub:'Motion captures value at every operational touchpoint \u2014 through infrastructure the fleet depends on daily.',idx:props.idx,tot:props.tot},
+    h('div',{className:'gA'},
+      h('div',{className:'s10',style:{display:'flex',flexDirection:'column'}},
+        h('div',{className:'sLbl',style:{marginBottom:9}},'Revenue Engines'),
+        eng.map(function(e,i){
+          return h('div',{key:i,className:'rRow'},
+            h('div',null,h('div',{className:'rNam'},e.name),h('div',{className:'rDet'},e.det)),
+            h('div',{className:'rBdg'},e.badge)
+          );
+        }),
+        h('div',{style:{marginTop:11,padding:'11px 14px',borderRadius:13,background:'var(--bg2)',border:'1px solid var(--bd)'}},
+          h('div',{className:'sLbl',style:{marginBottom:5}},'Target: 10 or fewer trucks \u00b7 95.8% of all active carriers'),
+          h('div',{style:{fontSize:11,color:'var(--t2)',lineHeight:1.5}},'750,000 active motor carriers in the U.S. \u2014 all underserved by current tooling.')
+        )
+      ),
+      h('div',{className:'s10',style:{display:'flex',flexDirection:'column'}},
+        h('div',{className:'sLbl',style:{marginBottom:9}},'Scale Milestones'),
+        h('div',{style:{display:'flex',gap:9,marginBottom:10}},
+          milestones.map(function(m,i){
+            return h('div',{key:i,className:'crd'+(m.a?' crdM':''),style:{flex:1,padding:'11px 13px',textAlign:'center'}},
+              h('div',{style:{fontSize:9,fontWeight:700,textTransform:'uppercase',letterSpacing:'.2em',color:m.a?'var(--mx)':'var(--t4)',marginBottom:5}},m.yr),
+              h('div',{style:{fontSize:10,color:'var(--t3)',marginBottom:3}},m.u),
+              h('div',{style:{fontSize:16,fontWeight:800,color:m.a?'var(--ac)':'var(--ch)',letterSpacing:'-.02em'}},m.r)
+            );
+          })
+        ),
+        h('div',{className:'crd crdM',style:{padding:'13px 15px'}},
+          h('div',{className:'sLbl sLblM',style:{marginBottom:7}},'Estimated Revenue Per OO / Year (1 Unit)'),
+          perOO.map(function(row,i){
+            return h('div',{key:i,style:{display:'flex',justifyContent:'space-between',padding:'6px 0',borderTop:i===0?'none':'1px solid var(--ms)'}},
+              h('div',{style:{fontSize:11,color:'var(--t2)'}},row[0]),
+              h('div',{style:{fontSize:12,fontWeight:700,color:'var(--ac)'}},row[1])
+            );
+          }),
+          h('div',{style:{display:'flex',justifyContent:'space-between',padding:'8px 0',borderTop:'2px solid var(--ms)',marginTop:2}},
+            h('div',{style:{fontSize:12,fontWeight:700,color:'var(--ch)'}},'Total'),
+            h('div',{style:{fontSize:15,fontWeight:800,color:'var(--ac)'}},'$13,263')
+          )
+        )
+      )
+    )
+  );
+}
+
+/* ════ S09 EXECUTION PLAN ════ */
+function S09(props){
+  var teams=[
+    {name:'Platform & Architecture',focus:'Refactoring, Infrastructure, APIs',n:10},
+    {name:'Product Integrations',   focus:'External system integrations',     n:8},
+    {name:'Web & Mobile',           focus:'Driver App, Internal Portals',     n:4},
+    {name:'AI & Data',              focus:'Predictive Models, Analytics',     n:6},
+    {name:'QA & Automation',        focus:'Testing Frameworks, Regression',   n:6},
+    {name:'DevOps & Cloud',         focus:'CI/CD, Monitoring, Scalability',   n:3},
+    {name:'Product & UX',           focus:'PMs, Design, BAs',                 n:6},
+  ];
+  var alloc=[
+    {cat:'Payroll, Taxes & Benefits',  desc:'Engineer salaries, health, PTO, employer taxes',    pct:75, color:'#1fbb72'},
+    {cat:'Contingency & Buffer',       desc:'Inflation, delays, hiring gaps, scope changes',     pct:10, color:'#f97316'},
+    {cat:'Cloud Infrastructure',       desc:'AWS, Twilio, integrations, dev tools, licenses',   pct:5,  color:'#3b82f6'},
+    {cat:'Office / Equipment / Admin', desc:'Laptops, workspace, HR, accounting',               pct:5,  color:'#eab308'},
+    {cat:'Marketing / Biz Dev',        desc:'Product launch, sales outreach',                   pct:5,  color:'#8b5cf6'},
+  ];
+  var circ = 2*Math.PI*36;
+  var offset = 0;
+  return h(Slide,{ey:'Execution Plan',title:'Team Structure & Capital Allocation',idx:props.idx,tot:props.tot,alt:true},
+    h('div',{className:'gA'},
+      h('div',{className:'s10',style:{display:'flex',flexDirection:'column'}},
+        h('div',{className:'crd crdM',style:{padding:'13px 16px',marginBottom:4}},
+          h('div',{className:'sLbl sLblM',style:{marginBottom:7}},'Raise \u00b7 Duration \u00b7 Milestones'),
+          h('div',{style:{display:'flex',gap:14}},
+            [{l:'Raise',v:'$15M Seed+ / Series A'},{l:'Duration',v:'24\u201330 months'},{l:'Releases',v:'4\u20138 major \u00b7 8\u201310 quarters'}].map(function(d,i){
+              return h('div',{key:i},
+                h('div',{style:{fontSize:9,color:'var(--mx)',fontWeight:700,textTransform:'uppercase',letterSpacing:'.16em',marginBottom:2}},d.l),
+                h('div',{style:{fontSize:11,fontWeight:600,color:'var(--ch)'}},d.v)
+              );
+            })
+          )
+        ),
+        h('div',{className:'crd',style:{padding:'11px 14px'}},
+          h('div',{className:'sLbl',style:{marginBottom:8}},'Engineering Team \u2014 ~43 Headcount'),
+          teams.map(function(t,i){
+            return h('div',{key:i,style:{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'5px 0',borderTop:i===0?'none':'1px solid var(--bd)'}},
+              h('div',null,h('div',{style:{fontSize:11,fontWeight:600,color:'var(--t)'}},t.name),h('div',{style:{fontSize:10,color:'var(--t3)'}},t.focus)),
+              h('div',{style:{fontSize:13,fontWeight:800,color:'var(--ac)',minWidth:22,textAlign:'right'}},t.n)
+            );
+          }),
+          h('div',{style:{display:'flex',justifyContent:'space-between',padding:'7px 0',borderTop:'2px solid var(--ms)',marginTop:2}},
+            h('div',{style:{fontSize:11,fontWeight:700,color:'var(--ch)'}},'Total'),
+            h('div',{style:{fontSize:15,fontWeight:800,color:'var(--ac)'}},'~43')
+          )
+        )
+      ),
+      h('div',{className:'s10',style:{display:'flex',flexDirection:'column'}},
+        h('div',{className:'sLbl',style:{marginBottom:8}},'Capital Allocation \u2014 $15M'),
+        h('div',{style:{display:'flex',alignItems:'center',gap:14,marginBottom:10}},
+          h('svg',{width:100,height:100,viewBox:'0 0 100 100'},
+            h('circle',{cx:50,cy:50,r:36,fill:'none',stroke:'var(--bg3)',strokeWidth:16}),
+            (function(){
+              var els=[]; var off=0;
+              alloc.forEach(function(a,i){
+                var dash=(a.pct/100)*circ;
+                els.push(h('circle',{key:i,cx:50,cy:50,r:36,fill:'none',stroke:a.color,strokeWidth:16,strokeDasharray:dash+' '+(circ-dash),strokeDashoffset:-off,transform:'rotate(-90 50 50)'}));
+                off+=dash;
+              });
+              return els;
+            })(),
+            h('text',{x:50,y:46,textAnchor:'middle',fontSize:10,fontWeight:800,fill:'var(--ch)',fontFamily:'Inter'},'$15M'),
+            h('text',{x:50,y:59,textAnchor:'middle',fontSize:7,fill:'var(--t4)',fontFamily:'Inter'},'Seed+/A')
+          ),
+          h('div',{className:'s8',style:{flex:1}},
+            alloc.map(function(a,i){
+              return h('div',{key:i,style:{display:'flex',alignItems:'center',gap:6}},
+                h('div',{style:{width:8,height:8,borderRadius:2,background:a.color,flexShrink:0}}),
+                h('div',{style:{fontSize:10,color:'var(--t2)',flex:1}},a.cat),
+                h('div',{style:{fontSize:10,fontWeight:700,color:'var(--t)'}},a.pct+'%')
+              );
+            })
+          )
+        ),
+        alloc.map(function(a,i){
+          return h('div',{key:i,style:{display:'flex',alignItems:'flex-start',gap:8,padding:'7px 0',borderTop:i===0?'none':'1px solid var(--bd)'}},
+            h('div',{style:{width:8,height:8,borderRadius:2,background:a.color,flexShrink:0,marginTop:2}}),
+            h('div',{flex:1},
+              h('div',{style:{fontSize:11,fontWeight:600,color:'var(--t)'}},a.cat+' \u2014 '+a.pct+'%'),
+              h('div',{style:{fontSize:10,color:'var(--t3)',marginTop:1}},a.desc)
+            )
+          );
+        })
+      )
+    )
+  );
+}
+
+/* ════ S10 MARKETPLACE ════ */
+function S10(props){
+  var sup=['Owner-Operators','Small Fleets','Dispatchers'];
+  var dem=['Shippers','Freight Brokers','Load Boards'];
+  var inf=['Insurance','Factoring','Fuel Network','Compliance','Dispatch','Accounting','Driver App'];
+  var partners=['Apex Capital','Pilot/Flying J','Google','QuickBooks','NetSuite','Comdata','EFS','Relay'];
+  var moat=[
+    {t:'Network Depth',  d:'3,118 OOs embedded \u2014 compounding moat with every addition'},
+    {t:'Data Advantage', d:'100K+ loads of history \u2014 superior risk and pricing data'},
+    {t:'USKO Anchor',    d:'$120M live business provides a stable, proven revenue floor'},
+    {t:'Switching Cost', d:'Multi-service lock-in compounds across every infrastructure layer'},
+  ];
+  return h(Slide,{ey:'Marketplace',title:'A Marketplace for Small Fleets',sub:'Motion is the connective layer between owner-operators, freight, and every financial service they need to operate.',idx:props.idx,tot:props.tot},
+    h('div',{style:{display:'flex',gap:13,height:'100%'}},
+      h('div',{style:{display:'flex',flexDirection:'column',gap:6,minWidth:135}},
+        h('div',{style:{fontSize:9,fontWeight:700,textTransform:'uppercase',letterSpacing:'.22em',color:'var(--t4)',marginBottom:3}},'Supply'),
+        sup.map(function(n){return h('div',{key:n,className:'ecoN'},n);}),
+        h('div',{style:{flex:1}}),
+        h('div',{style:{fontSize:9,fontWeight:700,textTransform:'uppercase',letterSpacing:'.22em',color:'var(--t4)',marginBottom:3}},'Demand'),
+        dem.map(function(n){return h('div',{key:n,className:'ecoN'},n);})
+      ),
+      h('div',{style:{flex:1,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',gap:11,position:'relative'}},
+        h('div',{style:{position:'absolute',top:'50%',left:0,right:0,height:'1px',background:'var(--bd)',transform:'translateY(-50%)'}}),
+        h('div',{className:'ecoC'},'Motion',h('span',null,'Platform')),
+        h('div',{style:{display:'flex',flexWrap:'wrap',gap:6,justifyContent:'center'}},
+          inf.map(function(n){return h('div',{key:n,className:'ecoN ecoNM',style:{fontSize:10}},n);})
+        )
+      ),
+      h('div',{style:{display:'flex',flexDirection:'column',gap:6,minWidth:185}},
+        h('div',{style:{fontSize:9,fontWeight:700,textTransform:'uppercase',letterSpacing:'.22em',color:'var(--t4)',marginBottom:3}},'Integration Partners'),
+        h('div',{style:{display:'flex',flexWrap:'wrap',gap:5,marginBottom:7}},
+          partners.map(function(p){
+            return h('div',{key:p,style:{padding:'3px 8px',borderRadius:7,border:'1px solid var(--bd)',background:'var(--bg)',fontSize:10,fontWeight:500,color:'var(--t2)'}},p);
+          })
+        ),
+        h('div',{style:{fontSize:9,fontWeight:700,textTransform:'uppercase',letterSpacing:'.22em',color:'var(--t4)',marginBottom:3}},'Infrastructure Moat'),
+        moat.map(function(m,i){
+          return h('div',{key:i,className:'crd',style:{padding:'9px 11px'}},
+            h('div',{style:{fontSize:11,fontWeight:600,color:'var(--ac)',marginBottom:2}},m.t),
+            h('div',{style:{fontSize:10,color:'var(--t3)',lineHeight:1.5}},m.d)
+          );
+        })
+      )
+    )
+  );
+}
+
+/* ════ S11 EXPANSION ════ */
+function S11(props){
+  var phases=[
+    {ph:'Phase 1 \u00b7 Now',          ti:'USKO Network',         items:['3,118 OOs already using Motion','$120M USKO revenue as anchor','Infrastructure validated in 100K+ live loads'],a:true},
+    {ph:'Phase 2 \u00b7 12\u201324 Months', ti:'National Expansion',   items:['Open Motion beyond USKO network','Direct carrier acquisition at scale','Partner channel and broker distribution'],a:false},
+    {ph:'Phase 3 \u00b7 24\u201348 Months', ti:'AI & Automation Layer',items:['Telematics integration','Predictive insurance pricing via safety data','AI-driven load matching and dispatch'],a:false},
+  ];
+  var outcomes=['Fully integrated with leading logistics platforms','Unified end-to-end TMS + AI automation ecosystem','System ready to onboard small fleet operators nationally','Positioned for Series B / strategic partnerships'];
+  return h(Slide,{ey:'Expansion Plan',title:'USKO Built It. Motion Scales It.',idx:props.idx,tot:props.tot,alt:true},
+    h('div',{className:'gA'},
+      h('div',{className:'s12',style:{display:'flex',flexDirection:'column'}},
+        phases.map(function(p,i){
+          return h('div',{key:i,className:'crd'+(p.a?' crdM':''),style:{padding:'15px 17px'}},
+            h('div',{style:{fontSize:9,fontWeight:700,textTransform:'uppercase',letterSpacing:'.22em',color:p.a?'var(--mx)':'var(--t4)',marginBottom:5}},p.ph),
+            h('div',{style:{fontSize:13,fontWeight:700,color:'var(--ch)',marginBottom:7}},p.ti),
+            h('div',{className:'s8'},
+              p.items.map(function(item,j){
+                return h('div',{key:j,style:{display:'flex',gap:7,alignItems:'flex-start'}},
+                  h(Ck,{sz:11}),h('div',{style:{fontSize:11,color:'var(--t2)',lineHeight:1.45}},item)
+                );
+              })
+            )
+          );
+        }),
+        h('div',{style:{padding:'13px 2px',borderTop:'1px solid var(--bd)',marginTop:4}},
+          h('div',{style:{fontSize:13,fontWeight:700,color:'var(--ch)',lineHeight:1.5}},
+            '"Not a theory. Not a pilot. ',h('span',{style:{color:'var(--ac)'}},'Infrastructure already proven in live operations."')
+          )
+        )
+      ),
+      h('div',{className:'s12',style:{display:'flex',flexDirection:'column'}},
+        h('div',{className:'crd crdD',style:{padding:'22px 24px'}},
+          h('div',{className:'sLbl sLblW',style:{marginBottom:7}},'Fundraising Ask'),
+          h('div',{style:{fontSize:50,fontWeight:800,color:'var(--mint)',letterSpacing:'-.04em',lineHeight:1}},'$15M'),
+          h('div',{style:{fontSize:12,color:'rgba(255,255,255,.5)',marginTop:8,lineHeight:1.6}},'Seed+ / Series A \u00b7 24\u201330 month delivery window \u00b7 4\u20138 major releases'),
+          h('div',{style:{height:'1px',background:'rgba(255,255,255,.1)',margin:'14px 0'}}),
+          h('div',{className:'sLbl sLblW',style:{marginBottom:5}},'Already Invested'),
+          h('div',{style:{fontSize:22,fontWeight:800,color:'#fff',letterSpacing:'-.02em'}},'$5M'),
+          h('div',{style:{fontSize:11,color:'rgba(255,255,255,.4)',marginTop:3}},'USKO-funded. Validated before this raise. De-risked by design.')
+        ),
+        h('div',{className:'crd',style:{padding:'13px 16px'}},
+          h('div',{className:'sLbl',style:{marginBottom:9}},'Post-Raise Outcomes'),
+          outcomes.map(function(o,i){
+            return h('div',{key:i,style:{display:'flex',gap:7,alignItems:'flex-start',padding:'6px 0',borderTop:i===0?'none':'1px solid var(--bd)'}},
+              h(Ck,{sz:11}),h('div',{style:{fontSize:11,color:'var(--t2)',lineHeight:1.45}},o)
+            );
+          })
+        )
+      )
+    )
+  );
+}
+
+/* ════ S12 CONTACT ════ */
+function S12(props){
+  var idx=props.idx,tot=props.tot;
+  var qrState=useState(null);   var qrSrc=qrState[0];   var setQrSrc=qrState[1];
+  var photoState=useState(null);var photoSrc=photoState[0];var setPhotoSrc=photoState[1];
+
+  useEffect(function(){
+    /* QR code */
+    var qr=new Image();
+    qr.onload=function(){setQrSrc('https://i.imgur.com/oBxJ7S3.png');};
+    qr.onerror=function(){setQrSrc('https://i.imgur.com/oBxJ7S3.png');};
+    qr.src='https://i.imgur.com/oBxJ7S3.png';
+
+    /* Vlad's photo */
+    var ph=new Image();
+    ph.crossOrigin='anonymous';
+    ph.onload=function(){setPhotoSrc('https://i.imgur.com/Dy0ikh6.png');};
+    ph.onerror=function(){setPhotoSrc('https://i.imgur.com/Dy0ikh6.png');};
+    ph.src='https://i.imgur.com/Dy0ikh6.png';
+  },[]);
+
+  var stats=[
+    {v:'100K+', l:'Loads Processed'},
+    {v:'$120M+',l:'2025 USKO Revenue'},
+    {v:'3,118', l:'Owner-Operators'},
+    {v:'$15M',  l:'Raising Now'},
+  ];
+
+
+  return h('div',{className:'slide'},
+    h('div',{className:'acl'}),
+    /* Subtle green radial glow top-right */
+    h('div',{style:{position:'absolute',inset:0,background:'radial-gradient(ellipse at 80% 10%,rgba(168,251,208,.14) 0%,transparent 48%),radial-gradient(ellipse at 20% 90%,rgba(168,251,208,.07) 0%,transparent 40%),#fff'}}),
+
+    h('div',{className:'inn',style:{padding:'26px 54px 26px'}},
+      /* Header */
+      h('div',{className:'hdr',style:{flexShrink:0}},
+        h(Logo,{ht:24}),
+        h('div',{className:'ctr'},(idx+1).toString().padStart(2,'0')+' \u00b7 '+tot.toString().padStart(2,'0'))
+      ),
+
+      /* Main — full height, horizontal split */
+      h('div',{style:{flex:1,display:'flex',alignItems:'stretch',gap:0,position:'relative',zIndex:1,marginTop:20}},
+
+        /* ── LEFT: Photo + name ── */
+        h('div',{style:{width:280,flexShrink:0,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',paddingRight:40,borderRight:'1px solid var(--bd)'}},
+          /* Circle photo */
+          h('div',{style:{
+            width:168,height:168,borderRadius:'50%',
+            background:'var(--bg3)',
+            overflow:'hidden',
+            border:'4px solid var(--bg)',
+            boxShadow:'0 0 0 3px rgba(31,187,114,.25), 0 8px 32px rgba(0,0,0,.1)',
+            marginBottom:20,flexShrink:0,
+          }},
+            photoSrc
+              ? h('img',{src:photoSrc,alt:'Vlad Skots',style:{width:'100%',height:'100%',objectFit:'cover',display:'block'}})
+              : h('div',{style:{width:'100%',height:'100%',display:'flex',alignItems:'center',justifyContent:'center',fontSize:11,color:'var(--t4)'}},'Loading...')
+          ),
+          h('div',{style:{fontSize:22,fontWeight:800,color:'var(--ch)',letterSpacing:'-.025em',textAlign:'center',lineHeight:1.1}},'Vlad Skots'),
+          h('div',{style:{fontSize:13,color:'var(--t3)',marginTop:5,textAlign:'center'}},'Founder & CEO'),
+          h('div',{style:{fontSize:12,color:'var(--t4)',marginTop:2,textAlign:'center'}},'USKO Inc'),
+          /* Founder story tagline */
+          h('div',{style:{marginTop:16,padding:'10px 14px',borderRadius:12,background:'rgba(31,187,114,.08)',border:'1px solid rgba(31,187,114,.15)',textAlign:'center'}},
+            h('div',{style:{fontSize:11,color:'var(--mx)',lineHeight:1.6,fontStyle:'italic'}},
+              '"$1,000 & no English in 2001.',h('br'),'Now running a $120M+ operation."'
             )
           )
         ),
-        h('p', { style:{marginTop:14,fontSize:12,lineHeight:1.65,color:'rgba(255,255,255,0.65)'} },
-          'Motion is designed to drive both software retention and service attach rate, increasing lifetime value per account.'
-        )
-      )
-    )
-  );
-}
 
-const roadmapAI = [
-  'AI Load Intake Assistant','AI Carrier Matching','AI Pricing / Margin Guidance',
-  'AI Communication Assistant','AI Load Summary','AI Document Intelligence',
-  'AI Natural Language Search','AI Performance Insights','AI Risk Scoring','AI After-Hours Assistant'
-];
+        /* ── MIDDLE: Contact info + QR ── */
+        h('div',{style:{flex:1,display:'flex',flexDirection:'column',justifyContent:'center',padding:'0 40px',borderRight:'1px solid var(--bd)'}},
+          h('div',{style:{fontSize:11,fontWeight:700,textTransform:'uppercase',letterSpacing:'.34em',color:'var(--ac)',marginBottom:14}},'Get In Touch'),
+          h('div',{style:{fontSize:32,fontWeight:800,letterSpacing:'-.035em',color:'var(--ch)',lineHeight:1,marginBottom:6}},'Let\'s Connect'),
+          h('div',{style:{fontSize:13,color:'var(--t3)',lineHeight:1.6,marginBottom:28,maxWidth:300}},'Ready to scale proven infrastructure nationally. Raising $15M to expand beyond the USKO network.'),
 
-function TractionSlide({ index, total }) {
-  return h(SlideShell, { eyebrow:'Traction & roadmap', title:'Real transportation workflows today, expanding AI leverage tomorrow', subtitle:'Motion already has a grounded product foundation and a roadmap that compounds value through AI across operations, pricing, communication, and risk.', index, total },
-    h('div', { className:'grid2', style:{gap:18} },
-      h('div', { className:'card', style:{padding:20} },
-        h('div', { style:{fontSize:10,textTransform:'uppercase',letterSpacing:'.28em',color:'rgba(255,255,255,0.45)',marginBottom:14} }, 'Current validation'),
-        h('div', { className:'grid2', style:{gap:10} },
-          h(StatCard, { label:'Platform status', value:'Live',     sublabel:'multi-tenant product foundation in place' }),
-          h(StatCard, { label:'Tenants',         value:'Active',  sublabel:'placeholder for live customer / tenant count' }),
-          h(StatCard, { label:'Loads processed', value:'Growing', sublabel:'placeholder for delivered load count through platform' }),
-          h(StatCard, { label:'Design partners', value:'In motion',sublabel:'workflow feedback loops shaping roadmap' }),
-        )
-      ),
-      h('div', { className:'card card-mint', style:{padding:20} },
-        h('div', { style:{fontSize:10,textTransform:'uppercase',letterSpacing:'.28em',color:'var(--mint)',marginBottom:14} }, 'AI roadmap'),
-        h('div', { className:'grid2', style:{gap:8} },
-          ...roadmapAI.map(item => h('div', { key:item, className:'roadmap-item' }, item))
-        )
-      )
-    )
-  );
-}
-
-function GTMSlide({ index, total }) {
-  const channels = [
-    ['Direct acquisition','Digital marketing, founder-led sales, demos, and outbound into owner-operators and 1–10 truck fleets.'],
-    ['Partner channels','Fuel card, factoring, insurance, compliance, and load-board ecosystem relationships drive efficient distribution.'],
-    ['Community loops','Trucking communities, dispatch networks, and referral dynamics support lower-cost growth.'],
-    ['AI wedge','Automation and predictive intelligence create a compelling reason to adopt Motion over generic software.'],
-  ];
-  return h(SlideShell, { eyebrow:'Go-to-market', title:'Focused distribution into the small-fleet ecosystem', subtitle:'Motion targets operators with the highest pain and the strongest incentive to switch—then compounds adoption through software + services.', index, total },
-    h('div', { className:'grid4', style:{gap:14} },
-      ...channels.map(([title,body]) =>
-        h('div', { key:title, className:'card', style:{padding:18} },
-          h('div', { style:{fontSize:15,fontWeight:600,marginBottom:10} }, title),
-          h('div', { style:{fontSize:12,lineHeight:1.65,color:'rgba(255,255,255,0.65)'} }, body)
-        )
-      )
-    )
-  );
-}
-
-function CompetitionSlide({ index, total }) {
-  const rows = [
-    { label:'Dispatch',              generic:true, legacy:true },
-    { label:'Driver app',            generic:true, legacy:true },
-    { label:'Safety management',     legacy:true },
-    { label:'Accounting',            generic:true, legacy:true },
-    { label:'Communication',         point:true },
-    { label:'Insurance' },
-    { label:'Fuel' },
-    { label:'Factoring',             point:true },
-    { label:'Compliance services',   point:true },
-    { label:'AI automation' },
-    { label:'Owner-operator focus' },
-  ];
-  return h(SlideShell, { eyebrow:'Competitive landscape', title:'A more complete offering for small operators', subtitle:'Most competitors solve one slice of the problem. Motion combines operations, AI, and services into one platform purpose-built for small carriers.', index, total },
-    h('div', { className:'comp-table' },
-      h('div', { className:'comp-head' },
-        h('div', { className:'comp-head-cell', style:{textAlign:'left'} }, 'Feature'),
-        h('div', { className:'comp-head-cell motion-col' }, 'Motion'),
-        h('div', { className:'comp-head-cell' }, 'Generic TMS'),
-        h('div', { className:'comp-head-cell' }, 'Legacy fleet'),
-        h('div', { className:'comp-head-cell' }, 'Point tools'),
-      ),
-      ...rows.map(r => h(CompRow, { key:r.label, ...r }))
-    )
-  );
-}
-
-function TechnologySlide({ index, total }) {
-  const pillars = [
-    { iconName:'cpu',    title:'Core platform',           body:'Web application, role-based workflows, backend services, secure data layer, and modular integrations.' },
-    { iconName:'file',   title:'Document processing',     body:'Read, structure, validate, and summarize shipment and compliance documents automatically.' },
-    { iconName:'route',  title:'Operational intelligence', body:'Pricing guidance, lane performance, exception prediction, and next-best-action support embedded in workflow.' },
-    { iconName:'search', title:'Natural-language access',  body:'Let users ask plain-English questions across Motion data instead of manually digging through screens.' },
-  ];
-  const stack = [
-    'Automatic Load Building','AI Load Intake Assistant','AI Carrier Matching',
-    'AI Pricing / Margin Guidance','AI Exception Prediction','AI Next Best Action Copilot',
-    'AI Communication Assistant','AI Performance Insights'
-  ];
-  return h(SlideShell, { eyebrow:'Technology', title:'AI-native platform architecture built to scale', subtitle:'Motion is designed as a cloud-based, multi-tenant system that supports core workflows today and AI leverage across every operational layer over time.', index, total },
-    h('div', { className:'grid-asym2' },
-      h('div', { className:'grid2', style:{gap:12} }, ...pillars.map(p => h(FeatureCard, { key:p.title, ...p }))),
-      h('div', { className:'card card-mint', style:{padding:20} },
-        h('div', { style:{fontSize:10,textTransform:'uppercase',letterSpacing:'.28em',color:'var(--mint)',marginBottom:14} }, 'AI capability stack'),
-        h('div', { style:{display:'grid',gap:8} },
-          ...stack.map(item => h('div', { key:item, className:'roadmap-item' }, item))
-        )
-      )
-    )
-  );
-}
-
-function TeamSlide({ index, total }) {
-  const members = [
-    ['Founder / CEO',         'Logistics operator with firsthand view into small-fleet pain, workflow friction, and market opportunity.'],
-    ['CTO / Product',         'Platform architecture, AI product delivery, and scalable workflow design.'],
-    ['Ops / Industry SME',    'Operational credibility across dispatch, compliance, customer service, and trucking execution.'],
-    ['Advisors / Future hires','AI, carrier operations, growth, finance, and partnerships.'],
-  ];
-  return h(SlideShell, { eyebrow:'Team', title:'Built by operators with real industry insight', subtitle:'Motion is being developed by leaders with direct exposure to trucking operations, owner-operator workflows, and SaaS product execution.', index, total },
-    h('div', { className:'grid4', style:{gap:14} },
-      ...members.map(([title,body]) =>
-        h('div', { key:title, className:'card', style:{padding:20} },
-          h('div', { className:'avatar' }),
-          h('div', { style:{fontSize:15,fontWeight:600} }, title),
-          h('div', { style:{marginTop:10,fontSize:12,lineHeight:1.65,color:'rgba(255,255,255,0.65)'} }, body)
-        )
-      )
-    )
-  );
-}
-
-function FinancialSlide({ index, total }) {
-  const stats = [
-    { label:'ARR growth',    value:'Placeholder', sublabel:'replace with 3–5 year revenue plan' },
-    { label:'MRR',           value:'Placeholder', sublabel:'replace with near-term revenue model' },
-    { label:'Gross margin',  value:'High',        sublabel:'software-led with service expansion' },
-    { label:'LTV expansion', value:'Multi-layer', sublabel:'subscription + insurance + factoring + fuel + compliance' },
-  ];
-  const bars = [28, 44, 62, 88, 116];
-  return h(SlideShell, { eyebrow:'Financials', title:'Layered monetization with scalable SaaS economics', subtitle:'Motion is designed to grow through recurring software revenue and deeper service attachment over time.', index, total },
-    h('div', { className:'grid4', style:{gap:12,marginBottom:16} },
-      ...stats.map(s => h(StatCard, { key:s.label, ...s }))
-    ),
-    h('div', { className:'grid2', style:{gap:16} },
-      h('div', { className:'card', style:{padding:20} },
-        h('div', { style:{fontSize:10,textTransform:'uppercase',letterSpacing:'.28em',color:'rgba(255,255,255,0.45)',marginBottom:12} }, 'Why the economics work'),
-        h('div', { className:'space-y' },
-          h('p', { className:'why-p' }, 'AI automation increases product value and retention by saving time in the highest-frequency workflows.'),
-          h('p', { className:'why-p' }, 'Embedded services create meaningful revenue expansion beyond subscription fees.'),
-          h('p', { className:'why-p' }, 'Small operators have acute pain and a clear ROI narrative, supporting strong adoption once workflow fit is right.'),
-        )
-      ),
-      h('div', { className:'card', style:{padding:20} },
-        h('div', { style:{display:'flex',alignItems:'center',gap:8,fontSize:10,textTransform:'uppercase',letterSpacing:'.28em',color:'rgba(255,255,255,0.45)',marginBottom:16} },
-          h(Icon, { name:'bar', size:14 }), 'Revenue projection (placeholder)'
-        ),
-        h('div', { className:'bar-chart' },
-          ...bars.map((h2,i) =>
-            h('div', { key:i, className:'bar-col' },
-              h('div', { className:'bar', style:{height: h2 + '%'} }),
-              h('div', { className:'bar-label' }, 'Y' + (i+1))
+          /* QR code */
+          h('div',{style:{display:'flex',alignItems:'center',gap:16}},
+            h('div',{style:{width:110,height:110,borderRadius:14,overflow:'hidden',border:'1px solid var(--bd)',background:'var(--bg2)',flexShrink:0}},
+              qrSrc
+                ? h('img',{src:qrSrc,alt:'QR',style:{width:'100%',height:'100%',objectFit:'cover',imageRendering:'pixelated',display:'block'}})
+                : h('div',{style:{width:'100%',height:'100%',display:'flex',alignItems:'center',justifyContent:'center',fontSize:10,color:'var(--t4)'}},'QR')
+            ),
+            h('div',null,
+              h('div',{style:{fontSize:14,fontWeight:700,color:'var(--ch)',marginBottom:5}},'Scan to connect with Vlad'),
+              h('div',{style:{fontSize:12,color:'var(--t3)',lineHeight:1.6}},'Point your camera at the code to reach out directly')
             )
+          )
+        ),
+
+        /* ── RIGHT: Stats + badge ── */
+        h('div',{style:{width:220,flexShrink:0,display:'flex',flexDirection:'column',justifyContent:'center',paddingLeft:40,gap:12}},
+          h('div',{style:{fontSize:11,fontWeight:700,textTransform:'uppercase',letterSpacing:'.28em',color:'var(--t4)',marginBottom:4}},'By The Numbers'),
+          stats.map(function(s,i){
+            return h('div',{key:i,style:{padding:'14px 18px',borderRadius:14,border:'1px solid var(--bd)',background:i===3?'var(--ch)':'var(--bg2)',display:'flex',alignItems:'center',justifyContent:'space-between',gap:10}},
+              h('div',{style:{fontSize:12,color:i===3?'rgba(255,255,255,.55)':'var(--t3)',fontWeight:500,letterSpacing:'.04em'}},s.l),
+              h('div',{style:{fontSize:20,fontWeight:800,color:i===3?'var(--mint)':'var(--ac)',letterSpacing:'-.02em',lineHeight:1}},s.v)
+            );
+          }),
+          h('div',{style:{marginTop:8,padding:'9px 14px',borderRadius:99,background:'rgba(31,187,114,.08)',border:'1px solid rgba(31,187,114,.18)',textAlign:'center'}},
+            h('div',{style:{fontSize:10,fontWeight:700,color:'var(--mx)',letterSpacing:'.16em',textTransform:'uppercase'}},'Infrastructure \u00b7 Proven \u00b7 Live')
           )
         )
       )
@@ -785,113 +1127,54 @@ function FinancialSlide({ index, total }) {
   );
 }
 
-function FundraisingSlide({ index, total }) {
-  const funds = ['AI product development','Engineering and platform scaling','Integrations and infrastructure','Customer acquisition / GTM','Operations and support'];
-  return h(SlideShell, { eyebrow:'Fundraising ask', title:"Funding Motion's next phase of AI product and market expansion", subtitle:'Capital accelerates product delivery, AI differentiation, integrations, customer acquisition, and the infrastructure needed to scale.', index, total },
-    h('div', { className:'grid2', style:{gap:18} },
-      h('div', { className:'card', style:{padding:22} },
-        h('div', { style:{fontSize:10,textTransform:'uppercase',letterSpacing:'.28em',color:'rgba(255,255,255,0.45)',marginBottom:16} }, 'Raise structure'),
-        h('div', { className:'space-y', style:{fontSize:14,color:'rgba(255,255,255,0.78)'} },
-          h('p', null, h('span', { style:{color:'var(--mint)'} }, 'Round: '), 'Seed / institutional'),
-          h('p', null, h('span', { style:{color:'var(--mint)'} }, 'Amount: '), 'Placeholder'),
-          h('p', null, h('span', { style:{color:'var(--mint)'} }, 'Runway: '), 'Placeholder'),
-          h('p', null, h('span', { style:{color:'var(--mint)'} }, 'Milestones: '), 'AI launch milestones, customer growth, service attach rate, and platform expansion.'),
-        )
+/* ════ APP ════ */
+var SLIDES=[S01,S02,S03,S04,S05,S06,S07,S08,S09,S10,S11,S12];
+
+function App(){
+  var curState=useState(0); var cur=curState[0]; var setCur=curState[1];
+  var animState=useState(false); var anim=animState[0]; var setAnim=animState[1];
+  var tot=SLIDES.length;
+
+  var go=useCallback(function(dir){
+    if(anim)return;
+    var next=dir===1?(cur===tot-1?0:cur+1):Math.max(0,cur-1);
+    if(next===cur)return;
+    setAnim(true);
+    setTimeout(function(){setCur(next);setAnim(false);},250);
+  },[cur,tot,anim]);
+
+  useEffect(function(){
+    function fn(e){
+      if(['ArrowRight','ArrowDown','d','D'].indexOf(e.key)>-1)go(1);
+      if(['ArrowLeft','ArrowUp','a','A'].indexOf(e.key)>-1)go(-1);
+    }
+    window.addEventListener('keydown',fn);
+    return function(){window.removeEventListener('keydown',fn);};
+  },[go]);
+
+  var Active=SLIDES[cur];
+  return h('div',{style:{position:'relative',width:'100vw',height:'100vh',overflow:'hidden'}},
+    h(Active,{idx:cur,tot:tot}),
+    h('div',{className:'nav'},
+      h('button',{className:'nb',onClick:function(){go(-1);},disabled:cur===0},
+        h('svg',{xmlns:'http://www.w3.org/2000/svg',width:10,height:10,viewBox:'0 0 24 24',fill:'none',stroke:'currentColor',strokeWidth:2.5,strokeLinecap:'round',strokeLinejoin:'round',dangerouslySetInnerHTML:{__html:'<polyline points="15 18 9 12 15 6"/>'}}),
+        'Prev'
       ),
-      h('div', { className:'card card-mint', style:{padding:22} },
-        h('div', { style:{fontSize:10,textTransform:'uppercase',letterSpacing:'.28em',color:'var(--mint)',marginBottom:14} }, 'Use of funds'),
-        h('div', { style:{display:'grid',gap:10} },
-          ...funds.map(f => h('div', { key:f, className:'card', style:{padding:'12px 16px',fontSize:13,color:'rgba(255,255,255,0.88)'} }, f))
-        )
-      )
-    )
-  );
-}
-
-function ClosingSlide({ index, total }) {
-  return h(SlideShell, { eyebrow:'Closing', title:'Motion', subtitle:'The AI operating system for owner-operators and small fleets. Helping smaller trucking businesses automate operations, predict risk, and run smarter.', index, total },
-    h('div', { className:'grid-asym2' },
-      h('div', { className:'card', style:{padding:24} },
-        h('div', { style:{fontSize:17,fontWeight:600,marginBottom:14} }, 'Why now'),
-        h('div', { className:'space-y' },
-          h('p', { className:'why-p' }, 'AI is finally capable of eliminating manual rekeying, surfacing operational risk earlier, and guiding teams to the next best action.'),
-          h('p', { className:'why-p' }, 'Owner-operators remain one of the most underserved segments in transportation software.'),
-          h('p', { className:'why-p' }, 'Motion is positioned to own that wedge with an AI TMS plus embedded services model.'),
-        )
-      ),
-      h('div', { className:'card card-mint', style:{padding:24} },
-        h('div', { style:{fontSize:10,textTransform:'uppercase',letterSpacing:'.28em',color:'var(--mint)',marginBottom:18} }, 'Contact'),
-        h('div', { style:{display:'grid',gap:10,fontSize:14,color:'rgba(255,255,255,0.9)'} },
-          h('div', null, 'Founder Name'),
-          h('div', null, 'email@motiontms.com'),
-          h('div', null, 'www.motiontms.com'),
-        ),
-        h('div', { style:{marginTop:28,display:'flex',gap:12,flexWrap:'wrap'} },
-          h('button', { style:{borderRadius:99,background:'#fff',padding:'12px 22px',fontSize:13,fontWeight:500,color:'#383838',border:'none',cursor:'pointer',fontFamily:"'DM Sans',sans-serif"} }, 'Schedule Demo'),
-          h('button', { style:{borderRadius:99,background:'transparent',padding:'12px 22px',fontSize:13,fontWeight:500,color:'#fff',border:'1px solid rgba(255,255,255,0.2)',cursor:'pointer',fontFamily:"'DM Sans',sans-serif"} }, 'Contact Us'),
-        )
-      )
-    )
-  );
-}
-
-// ── App ────────────────────────────────────────────────────────
-const slides = [
-  TitleSlide, AgendaSlide, ProblemSlide, SolutionSlide, ProductSlide,
-  MarketSlide, BusinessModelSlide, TractionSlide, GTMSlide, CompetitionSlide,
-  TechnologySlide, TeamSlide, FinancialSlide, FundraisingSlide, ClosingSlide,
-];
-
-function App() {
-  const [current, setCurrent] = useState(0);
-  const [animating, setAnimating] = useState(false);
-  const total = slides.length;
-
-  const go = useCallback((dir) => {
-    if (animating) return;
-    const next = dir === 1 ? (current === total - 1 ? 0 : current + 1) : Math.max(0, current - 1);
-    if (next === current) return;
-    setAnimating(true);
-    setTimeout(() => { setCurrent(next); setAnimating(false); }, 300);
-  }, [current, total, animating]);
-
-  useEffect(() => {
-    const onKey = (e) => {
-      if (['ArrowRight','ArrowDown','d','D'].includes(e.key)) go(1);
-      if (['ArrowLeft','ArrowUp','a','A'].includes(e.key))   go(-1);
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [go]);
-
-  const ActiveSlide = slides[current];
-  const progress = (current / (total - 1)) * 100;
-
-  return h('div', { style:{position:'relative',width:'100vw',height:'100vh',overflow:'hidden'} },
-    h(ActiveSlide, { index: current, total }),
-
-    // Nav
-    h('div', { className:'nav' },
-      h('button', { className:'nav-btn', onClick: () => go(-1), disabled: current === 0 },
-        h('svg', { xmlns:'http://www.w3.org/2000/svg',width:14,height:14,viewBox:'0 0 24 24',fill:'none',stroke:'currentColor',strokeWidth:2,strokeLinecap:'round',strokeLinejoin:'round',dangerouslySetInnerHTML:{__html:'<polyline points="15 18 9 12 15 6"/>'}}),'Prev'
-      ),
-      h('button', { className:'nav-btn nav-next', onClick: () => go(1) },
-        current === total - 1 ? 'Back to Start' : 'Next Slide',
-        h('span', { className:'nav-line' }, h('span', { className:'nav-progress', style:{width: animating ? '100%' : '0%'} })),
-        h('svg', { xmlns:'http://www.w3.org/2000/svg',width:14,height:14,viewBox:'0 0 24 24',fill:'none',stroke:'currentColor',strokeWidth:2,strokeLinecap:'round',strokeLinejoin:'round',dangerouslySetInnerHTML:{__html:'<polyline points="9 18 15 12 9 6"/>'}})
+      h('div',{className:'nsep'}),
+      h('button',{className:'nb pr',onClick:function(){go(1);}},
+        cur===tot-1?'Restart':'Next',
+        h('span',{className:'nln'},h('span',{className:'npg',style:{width:anim?'100%':'0%'}})),
+        h('svg',{xmlns:'http://www.w3.org/2000/svg',width:10,height:10,viewBox:'0 0 24 24',fill:'none',stroke:'currentColor',strokeWidth:2.5,strokeLinecap:'round',strokeLinejoin:'round',dangerouslySetInnerHTML:{__html:'<polyline points="9 18 15 12 9 6"/>'}})
       )
     ),
-
-    // Dots
-    h('div', { className:'dots' },
-      ...slides.map((_, i) =>
-        h('div', { key:i, className:'dot' + (i === current ? ' active' : ''), onClick: () => !animating && setCurrent(i), style:{cursor:'pointer'} })
-      )
+    h('div',{className:'dots'},
+      SLIDES.map(function(_,i){return h('div',{key:i,className:'dot'+(i===cur?' on':''),onClick:function(){if(!anim)setCur(i);}});})
     )
   );
 }
 
-ReactDOM.createRoot(document.getElementById('root')).render(h(LogoProvider, null, h(App)));
+ReactDOM.createRoot(document.getElementById('root')).render(h(App,null));
+})();
 </script>
 </body>
 </html>
